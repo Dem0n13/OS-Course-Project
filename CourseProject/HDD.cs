@@ -12,6 +12,11 @@ namespace OS
     public static class HDD
     {
         /// <summary>
+        /// Объем файла подкачки в страницах
+        /// </summary>
+        private static int SwapFileSize = GlobalConsts.PagesCount;
+
+        /// <summary>
         /// Каталог
         /// </summary>
         public static List<CatalogRecord> Catalog = new List<CatalogRecord>();
@@ -19,14 +24,14 @@ namespace OS
         /// <summary>
         /// Массив данных на жестком диске
         /// </summary>
-        public static HDDCell[] CellsArray = new HDDCell[GlobalConsts.HDDCellsCount + GlobalConsts.PagesCount];
+        public static HDDCell[] CellsArray = new HDDCell[GlobalConsts.HDDCellsCount + SwapFileSize];
 
         static HDD()
         {
             #region Инициализируем для перечисления
 #if FS_WITH_INDEX_ENUM
             // Инициализируем массив данных
-            for (int i = 0; i < GlobalConsts.HDDCellsCount + GlobalConsts.PagesCount; i++)
+            for (int i = 0; i < GlobalConsts.HDDCellsCount + SwapFileSize; i++)
             {
                 //ставим адрес у ячейки
                 CellsArray[i] = new HDDCell()
@@ -43,11 +48,12 @@ namespace OS
             }
 
             //инициалицируем start.txt
-            Catalog[0].Filename = "Start.txt";
-            NonRepeatEnum CatalogIndexses = new NonRepeatEnum(0, GlobalConsts.HDDCellsCount - 1);
+            Catalog[0].Filename = "File1.f";
+            //NonRepeatEnum CatalogIndexses = new NonRepeatEnum(0, GlobalConsts.HDDCellsCount - 1);
+            int temp = 7;
             for (int i = 0; i < 5; i++)
             {
-                int temp = CatalogIndexses.Next();
+                temp ++;
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
                     CellsArray[temp].Data[j] = (byte)Program.RND.Next(0, 256);
@@ -58,14 +64,8 @@ namespace OS
             }
             Catalog[0].IsOpen = false;
 
-            //инициалицируем result.txt
-            //CellsArray[Catalog[1].StartIndex].Next = -1;
-            //CellsArray[Catalog[1].StartIndex].IsFree = false;
-            //for (int j = 0; j < GlobalConsts.PageSize; j++)
-            //{
-            //    CellsArray[Catalog[1].StartIndex].Data[j] = (byte)Program.RND.Next(0, 256);
-            //}
-
+            //инициалицируем File2.f
+            Catalog[1].Filename = "File2.f";
 
 
             //// Инициализируем массив данных
@@ -122,7 +122,7 @@ namespace OS
             #region Инициализируем каталог для связанной последовательности индексов
 #if FS_WITH_INDEX_SEQ
             // Инициализируем массив данных
-            for (int i = 0; i < GlobalConsts.HDDCellsCount + GlobalConsts.PagesCount; i++)
+            for (int i = 0; i < GlobalConsts.HDDCellsCount + SwapFileSize; i++)
             {
                 //ставим адрес у ячейки
                 CellsArray[i] = new HDDCell()
@@ -133,47 +133,119 @@ namespace OS
                 CellsArray[i].Next = -1;
                 CellsArray[i].Data = new byte[GlobalConsts.PageSize];
             }
+            int temp = 7; //с какого начинать адреса писать первый файл
             NonRepeatEnum NESForHDD = new NonRepeatEnum(0, 15);
-            for (int i = 0; i < GlobalConsts.CatalogRecordsCount; i++)
-            {
-                Catalog.Add(new CatalogRecord() { Address = i + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = NESForHDD.Next(),FileSize=0 });
-            }
+            
+            Catalog.Add(new CatalogRecord() { Address = 0 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1,FileSize=0,Filename="File1" });
+            Catalog.Add(new CatalogRecord() { Address = 1 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1, FileSize = 0, Filename = "File2" });
+                //Catalog[i] = new CatalogRecord();
+                //Catalog[i].Address = i + GlobalConsts.StartCatalogRecords;
+                //Catalog[i].IsOpen = false;
+                //Catalog[i].StartIndex = NESForHDD.Next();
 
-            //инициалицируем start.txt
+            //инициалицируем File1.f
             //фигарим первый блок и адресуем к каталогу
-            CellsArray[Catalog[0].StartIndex].Next = NESForHDD.Next();
+            
+            Catalog[0].StartIndex = temp;
             for (int j = 0; j < GlobalConsts.PageSize; j++)
             {
                 CellsArray[Catalog[0].StartIndex].Data[j] = (byte)Program.RND.Next(0, 256);
             }
             Catalog[0].FileSize++;
             CellsArray[Catalog[0].StartIndex].IsFree = false;
-            //пишем остальные 3 блока
-            int prev = CellsArray[Catalog[0].StartIndex].Next;
-            for (int i = 0; i < 3; i++)
+            //пишем остальные 4 блока
+            int prev = Catalog[0].StartIndex;
+            for (int i = 0; i < 4; i++)
             {
 
                 Catalog[0].FileSize++;
+                CellsArray[prev].IsFree = false;
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
-                    CellsArray[prev].IsFree = false;
                     CellsArray[prev].Data[j] = (byte)Program.RND.Next(0, 256);
                 }
                 CellsArray[prev].IsFree = false;
-                CellsArray[prev].Next = NESForHDD.Next();
+                temp++;
+                CellsArray[prev].Next = temp;
                 prev = CellsArray[prev].Next;
             }
-            //конец файла start.txt+1блок
-            Catalog[0].FileSize++;
+            ////конец файла start.txt+1блок
             CellsArray[prev].Next = -1;
             CellsArray[prev].IsFree = false;
             for (int j = 0; j < GlobalConsts.PageSize; j++)
             {
                 CellsArray[prev].Data[j] = (byte)Program.RND.Next(0, 256);
             }
-            Catalog[0].Filename = "Start.txt";
+
+            //инициалицируем result.txt
+            //CellsArray[Catalog[1].StartIndex].Next = -1;
+            //CellsArray[Catalog[1].StartIndex].IsFree = false;
+            //for (int j = 0; j < GlobalConsts.PageSize; j++)
+            //{
+            //    CellsArray[Catalog[1].StartIndex].Data[j] = (byte)Program.RND.Next(0, 256);
+            //}
+
 
             Catalog[0].IsOpen = false;
+
+
+            
+                    //for (int i = 0; i < GlobalConsts.HDDCellsCount + SwapFileSize; i++)
+                    //{
+                    //    //ставим адрес у ячейки
+                    //    CellsArray[i] = new HDDCell()
+                    //        {
+                    //            Address = i
+                    //        };
+                    //    //заполняем файловые блоки инфой
+                    //    CellsArray[i].Data = new byte[GlobalConsts.PageSize];
+                    //    for (int j = 0; j < GlobalConsts.PageSize; j++)
+                    //    {
+
+                    //        if (i < GlobalConsts.HDDCellsCount)
+                    //        {
+                    //            CellsArray[i].IsFree = false;
+                    //            CellsArray[i].Data[j] = (byte)Program.RND.Next(0, 256);
+                    //        }
+                    //        if (i >= GlobalConsts.HDDCellsCount && i < GlobalConsts.HDDCellsCount + SwapFileSize)
+                    //        {
+                    //            CellsArray[i].IsFree = true;
+                    //            CellsArray[i].Data[j] = 0;
+                    //            CellsArray[i].Next = -1;
+                    //        }
+                    //    }
+                    //}
+
+                    ////связываем файловые блоки последовательностью
+                    //NonRepeatEnum NESForHDD = new NonRepeatEnum(0, 15);
+                    //for (int i = 0; i < Catalog.Length; i++)
+                    //{
+                    //    Catalog[i] = new CatalogRecord()
+                    //    {
+                    //        Address = i+GlobalConsts.StartCatalogRecords,
+                    //        IsOpen = false,
+                    //        StartIndex = NESForHDD.Next()
+                    //    };
+                    //}
+                    //for (int i = 0; i < Catalog.Length; i++)
+                    //{
+                    //    CellsArray[Catalog[i].StartIndex].Next = NESForHDD.Next();
+                    //    int prev = CellsArray[Catalog[i].StartIndex].Next;
+                    //    for (int j = 0; j < 2; j++)
+                    //    {
+                    //        CellsArray[prev].Next = NESForHDD.Next();
+                    //        prev = CellsArray[prev].Next;
+                    //    }
+                    //    //конец файла
+                    //    CellsArray[prev].Next = -1;
+                    //}
+
+                    //Catalog[0].Filename = "Start.txt";
+                    //Catalog[1].Filename = "Result.txt";
+                    
+                    //Catalog[0].IsOpen = false;
+                    //Catalog[1].IsOpen = false;
+
 #endif
             #endregion;
         }
@@ -183,7 +255,7 @@ namespace OS
         /// </summary>
         /// <param name="fname">Имя файла</param>
         /// <returns>Индекс файла в каталоге, либо -1, если не найден</returns>
-        private static int FindFile(string fname)
+        public static int FindFile(string fname)
         {
             for (int i = 0; i < Catalog.Count; i++)
             {
@@ -325,7 +397,7 @@ namespace OS
 
 
 #if FS_WITH_INDEX_ENUM
-        private static void AddFileBlock(int file)
+        public static void AddFileBlock(int file)
         {
             //ищем свободный блок
             for (int i=0;i<GlobalConsts.StartSwapArea;i++)
@@ -340,7 +412,7 @@ namespace OS
             }
         }
 
-        private static void CreateFile(String FileName)
+        public static void CreateFile(String FileName)
         {
             Catalog.Add(new CatalogRecord() { Address = Catalog.Count + GlobalConsts.StartCatalogRecords, IsOpen = false, Filename = FileName }); ;
         }
@@ -393,7 +465,7 @@ namespace OS
         /// Ищет свободную ячейку на HDD и возвращает ее адрес
         /// </summary>
         /// <returns>адрес свободной ячейки</returns>
-        private static int FindFreeFileBlock()
+        public static int FindFreeFileBlock()
         {
             for (int i = 0; i < GlobalConsts.StartSwapArea; i++)
             {

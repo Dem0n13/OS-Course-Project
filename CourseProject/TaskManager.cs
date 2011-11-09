@@ -10,7 +10,7 @@ namespace OS
     /// </summary>
     public static class TaskManager
     {
-        private static int CurrentProcessIndex = 0;
+        public static int CurrentProcessIndex = 0;
         
         /// <summary>
         /// Массив процессов
@@ -35,18 +35,17 @@ namespace OS
             Processes[2].LogicAreas = new TableDescriptor[] { Memory.Pages[2] as TableDescriptor };
             
             // пусть для каждого процесса существуют следующие заявки
-            Processes[0].Requests = new Request[GlobalConsts.SizesOfGroup[0] * 2];
+            Processes[0].Requests = new Request[GlobalConsts.SizesOfGroup[0]];
             Processes[1].Requests = new Request[GlobalConsts.SizesOfGroup[0] * 2];
             Processes[2].Requests = new Request[GlobalConsts.SizesOfGroup[0]];
             for (int i = 0; i < GlobalConsts.SizesOfGroup[0]; i++)
             {
-                Processes[0].Requests[i] = new Request() { Type = RequestTypes.HDDToMemory, FromFile = "Start.txt", FileBlockNum = i, ToTable = 0, ToDescriptor = i };
-                Processes[0].Requests[i + GlobalConsts.SizesOfGroup[0]] = new Request() { Type = RequestTypes.MemoryToMemory, FromTable = 0, FromDescriptor = i, ToTable = 1, ToDescriptor = i };
+                Processes[0].Requests[i] = new Request() { Type = RequestTypes.MemoryToMemory, FromTable = 0, FromDescriptor = i, ToTable = 1, ToDescriptor = i };
 
                 Processes[1].Requests[2 * i] = new Request() { Type = RequestTypes.Action, FromTable = 1, FromDescriptor = i };
-                Processes[1].Requests[2 * i + 1] = new Request() { Type = RequestTypes.MemoryToHDD, FromTable = 1, FromDescriptor = i, ToFile = "Result.txt", FileBlockNum = i, };
+                Processes[1].Requests[2 * i + 1] = new Request() { Type = RequestTypes.MemoryToHDD, FromTable = 1, FromDescriptor = i, ToFile = "File2", FileBlockNum = i, };
 
-                Processes[2].Requests[i] = new Request() { Type = RequestTypes.HDDToMemory, FromFile = "Result.txt", FileBlockNum = i, ToTable = 2, ToDescriptor = i };
+                Processes[2].Requests[i] = new Request() { Type = RequestTypes.HDDToMemory, FromFile = "File2", FileBlockNum = i, ToTable = 2, ToDescriptor = i };
             }
 #if TM_SRT       
             // сортируем процессы по длительности

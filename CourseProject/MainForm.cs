@@ -30,16 +30,17 @@ namespace OS
             InitializeComponent();
 
             // инициализация редактора заявок
-            EditBtn = new Button();
-            EditBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-            EditBtn.Text = "Изменить заявку";
-            EditBtn.Click += new System.EventHandler(EditBtn_Click);
+            //EditBtn = new Button();
+            //EditBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+            //EditBtn.Text = "Изменить заявку";
+            //EditBtn.Click += new System.EventHandler(EditBtn_Click);
 #if UI_REQUEST_EDITOR_ON_EDITOR_FORM
-            tableLayoutPanel2.RowStyles[1].Height = 40;
-            EditorPanel.SetColumnSpan(EditBtn, EditorPanel.ColumnCount);
-            EditorPanel.SetRowSpan(EditBtn, EditorPanel.RowCount);
-            EditorPanel.Controls.Add(EditBtn);
-            VisualAdapter.EditRequestBtn = this.EditBtn;
+            //tableLayoutPanel2.RowStyles[1].Height = 40;
+            //EditorPanel.SetColumnSpan(EditBtn, EditorPanel.ColumnCount);
+            //EditorPanel.SetRowSpan(EditBtn, EditorPanel.RowCount);
+            //EditorPanel.Controls.Add(EditBtn);
+            VisualAdapter.EditRequestBtn = this.EditRequestBtn;
+            VisualAdapter.EditRequestBtn.Visible = false;
 #endif
 #if UI_REQUEST_EDITOR_ON_MAIN_FORM
             this.EditorPanel.SetColumnSpan(this.EditBtn, 3);
@@ -98,6 +99,7 @@ namespace OS
             VisualAdapter.DGCatalog = this.Catalog;
             VisualAdapter.DGCellsArray = this.CellsArray;
             VisualAdapter.DGRequests = this.DGRequsts;
+            VisualAdapter.LabelProc = this.label7;
             VisualAdapter.Init();
         }
 
@@ -110,7 +112,7 @@ namespace OS
         }
         //123
 #if UI_REQUEST_EDITOR_ON_EDITOR_FORM
-        private void EditBtn_Click(object sender, EventArgs e)
+        private void EditRequestBtn_Click(object sender, EventArgs e)
         {
             // получаем номер процесса и номер заявки
             int i_process = 0;
@@ -176,5 +178,7 @@ namespace OS
         {
             VisualAdapter.RefreshRequests();
         }
+
+   
     }
 }

@@ -20,6 +20,7 @@ namespace OS
         public static DataGridView DGCatalog;
         public static DataGridView DGCellsArray;
         public static DataGridView DGRequests;
+        public static Label LabelProc;
 #if UI_REQUEST_EDITOR_ON_EDITOR_FORM
         public static Button EditRequestBtn;
 #endif
@@ -55,7 +56,7 @@ namespace OS
                 DGDescriptionTable.Rows[i].Cells[2].Value = (Memory.Pages[i] as TableDescriptor).TargetAddress.ToString();
 
                 // расскрашиваем группы
-                DGDescriptionTable.Rows[i].Cells[1].Style.BackColor = System.Drawing.Color.FromArgb(Program.RND.Next(100, 255), Program.RND.Next(100, 255), Program.RND.Next(100, 255));
+                //DGDescriptionTable.Rows[i].Cells[1].Style.BackColor = System.Drawing.Color.FromArgb(Program.RND.Next(100, 255), Program.RND.Next(100, 255), Program.RND.Next(100, 255));
                 DGDescriptionTable.Rows[i].Cells[2].Style.BackColor = DGDescriptionTable.Rows[i].Cells[1].Style.BackColor;
             }
             
@@ -87,9 +88,9 @@ namespace OS
             DGDescriptionPages.Columns[0].Width = 50;
             DGDescriptionPages.Columns[1].HeaderText = "Present";
             DGDescriptionPages.Columns[1].Width = 50;
-            DGDescriptionPages.Columns[2].HeaderText = "Mutex";
+            DGDescriptionPages.Columns[2].HeaderText = "Мьютекс";
             DGDescriptionPages.Columns[2].Width = 50;
-            DGDescriptionPages.Columns[3].HeaderText = "Swap";
+            DGDescriptionPages.Columns[3].HeaderText = "Адр. в ФП";
             DGDescriptionPages.Columns[3].Width = 50;
             DGDescriptionPages.Columns[4].HeaderText = "Ссылка";
             DGDescriptionPages.Columns[4].Width = 50;
@@ -107,7 +108,7 @@ namespace OS
 #endif
 #if (WSClock || NFU || LRU)
 
-            DGDescriptionPages.Columns[6].HeaderText = "Access";
+            DGDescriptionPages.Columns[6].HeaderText = "А";
             DGDescriptionPages.Columns[6].Width = 50;
 #endif
 
@@ -235,7 +236,7 @@ namespace OS
             DGCellsArray.Columns[2].HeaderText = "1";
             DGCellsArray.Columns[3].HeaderText = "2";
             DGCellsArray.Columns[4].HeaderText = "3";
-            DGCellsArray.Columns[5].HeaderText = "Next";
+            DGCellsArray.Columns[5].HeaderText = "След.";
             DGCellsArray.Columns[6].HeaderText = "Свободно";
 
             DGCellsArray.Columns[0].Width = 42;
@@ -295,10 +296,10 @@ namespace OS
                         DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;
                     else if (j == TaskManager.Processes[i].Context.CurrentRequest)
                     {
-                        if (TaskManager.Processes[i].State == ProcessState.Active)
-                            DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightGreen;
-                        if (TaskManager.Processes[i].State == ProcessState.Paused)
-                            DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.SandyBrown;
+                        //if (TaskManager.Processes[i].State == ProcessState.Active)
+                        //    DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightGreen;
+                        //if (TaskManager.Processes[i].State == ProcessState.Paused)
+                        //    DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.SandyBrown;
                     }
                 }
             }
@@ -337,6 +338,7 @@ namespace OS
                 EditorPanel.Enabled = false;
             }
 #endif
+            LabelProc.Text = "Следующий процесс: " + TaskManager.Processes[TaskManager.CurrentProcessIndex].ID;
         }
 
 #if UI_REQUEST_EDITOR_ON_MAIN_FORM
@@ -454,9 +456,9 @@ namespace OS
             for (int i = 0; i < GlobalConsts.StartAddressAreaOfPages - GlobalConsts.StartAddressDescriptionPage; i++)
             {
                 DGDescriptionPages.Rows[i].Cells[1].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Present;
-                DGDescriptionPages[1, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Present == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
+                //DGDescriptionPages[1, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Present == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
                 DGDescriptionPages.Rows[i].Cells[2].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Mutex;
-                DGDescriptionPages[2, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Mutex == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
+                //DGDescriptionPages[2, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Mutex == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
                 DGDescriptionPages.Rows[i].Cells[3].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).AddressInSwap;
                 DGDescriptionPages.Rows[i].Cells[4].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).TargetAddress;
 #if (WS || WSClock)
@@ -464,14 +466,14 @@ namespace OS
 #endif
 #if (FIFO_SC || ClockWithOneArrow || ClockWithTwoArrows)
                 DGDescriptionPages.Rows[i].Cells[5].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access;
-                DGDescriptionPages[5, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
+                //DGDescriptionPages[5, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
 #endif
 #if (NFU ||LRU)
                 DGDescriptionPages.Rows[i].Cells[5].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Counter;
 #endif
 #if (WSClock||NFU ||LRU)
                 DGDescriptionPages.Rows[i].Cells[6].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access;
-                DGDescriptionPages[6, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
+                //DGDescriptionPages[6, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
 #endif
             }
 
@@ -498,7 +500,7 @@ namespace OS
             for (int i = 0; i < HDD.Catalog.Count; i++)
             {
                 DGCatalog.Rows[i].Cells[1].Value = HDD.Catalog[i].IsOpen;
-                DGCatalog[1, i].Style.BackColor = HDD.Catalog[i].IsOpen == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
+                //DGCatalog[1, i].Style.BackColor = HDD.Catalog[i].IsOpen == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
                 DGCatalog.Rows[i].Cells[0].Value = HDD.Catalog[i].Address;
                 DGCatalog.Rows[i].Cells[2].Value = HDD.Catalog[i].Filename;
                 DGCatalog.Rows[i].Cells[4].Value = HDD.Catalog[i].FileSize;
@@ -523,7 +525,7 @@ namespace OS
                     DGCellsArray.Rows[i].Cells[1 + j].Value = HDD.CellsArray[i].Data[j];
                 }
                 DGCellsArray.Rows[i].Cells[5].Value = HDD.CellsArray[i].IsFree;
-                DGCellsArray.Rows[i].Cells[5].Style.BackColor = HDD.CellsArray[i].IsFree == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
+                //DGCellsArray.Rows[i].Cells[5].Style.BackColor = HDD.CellsArray[i].IsFree == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
             }
 #endif
             #endregion
@@ -535,7 +537,7 @@ namespace OS
             for (int i = 0; i < HDD.Catalog.Count; i++)
             {
                 DGCatalog.Rows[i].Cells[1].Value = HDD.Catalog[i].IsOpen;
-                DGCatalog[1, i].Style.BackColor = HDD.Catalog[i].IsOpen == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
+                //DGCatalog[1, i].Style.BackColor = HDD.Catalog[i].IsOpen == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
                 DGCatalog.Rows[i].Cells[0].Value = HDD.Catalog[i].Address;
                 DGCatalog.Rows[i].Cells[2].Value = HDD.Catalog[i].Filename;
                 DGCatalog.Rows[i].Cells[3].Value = HDD.Catalog[i].StartIndex;
@@ -552,7 +554,7 @@ namespace OS
                 }
                 DGCellsArray.Rows[i].Cells[5].Value = HDD.CellsArray[i].Next;
                 DGCellsArray.Rows[i].Cells[6].Value = HDD.CellsArray[i].IsFree;
-                DGCellsArray.Rows[i].Cells[6].Style.BackColor = HDD.CellsArray[i].IsFree == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
+                //DGCellsArray.Rows[i].Cells[6].Style.BackColor = HDD.CellsArray[i].IsFree == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
             }
 #endif
             #endregion

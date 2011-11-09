@@ -110,6 +110,18 @@ namespace OS
                     (Pages[i] as Page).Data[j] = 0;
                 }
             }
+
+            // демо пример: первая таблица уже проинициализирована
+            for (int i = GlobalConsts.CountOfGroup; i < GlobalConsts.CountOfGroup + GlobalConsts.SizesOfGroup[0]; i++)
+            {
+                (Pages[i] as PageDescriptor).Present = true;
+                (Pages[i] as PageDescriptor).TargetAddress = FindFreePage();
+                for (int j = 0; j < GlobalConsts.PageSize; j++)
+                {
+                    (Pages[(Pages[i] as PageDescriptor).TargetAddress] as Page).Dirty = true;
+                    (Pages[(Pages[i] as PageDescriptor).TargetAddress] as Page).Data[j] = (byte)Program.RND.Next(0, 256);
+                }
+            }
         }
 
         /// <summary>

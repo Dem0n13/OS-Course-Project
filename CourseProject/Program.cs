@@ -62,7 +62,7 @@ namespace OS
         /// <summary>
         /// Объем в оперативе под страницы.
         /// </summary>
-        public static int PagesAreaSize = 5;
+        public static int PagesAreaSize = 7;
 
         /// <summary>
         /// количество групп
@@ -121,7 +121,7 @@ namespace OS
         /// <summary>
         /// Количество файлов в системе
         /// </summary>
-        public static int CatalogRecordsCount = 1;
+        public static int CatalogRecordsCount = 2;
 
         /// <summary>
         /// Объем памяти ВЗУ в ячейках
