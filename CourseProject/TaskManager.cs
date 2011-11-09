@@ -43,9 +43,9 @@ namespace OS
                 Processes[0].Requests[i] = new Request() { Type = RequestTypes.MemoryToMemory, FromTable = 0, FromDescriptor = i, ToTable = 1, ToDescriptor = i };
 
                 Processes[1].Requests[2 * i] = new Request() { Type = RequestTypes.Action, FromTable = 1, FromDescriptor = i };
-                Processes[1].Requests[2 * i + 1] = new Request() { Type = RequestTypes.MemoryToHDD, FromTable = 1, FromDescriptor = i, ToFile = "File2", FileBlockNum = i, };
+                Processes[1].Requests[2 * i + 1] = new Request() { Type = RequestTypes.MemoryToHDD, FromTable = 1, FromDescriptor = i, ToFile = "File2.f", FileBlockNum = i, };
 
-                Processes[2].Requests[i] = new Request() { Type = RequestTypes.HDDToMemory, FromFile = "File2", FileBlockNum = i, ToTable = 2, ToDescriptor = i };
+                Processes[2].Requests[i] = new Request() { Type = RequestTypes.HDDToMemory, FromFile = "File2.f", FileBlockNum = i, ToTable = 2, ToDescriptor = i };
             }
 #if TM_SRT       
             // сортируем процессы по длительности
@@ -136,11 +136,11 @@ namespace OS
                     {
                         // считываем и записываем измененное
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(255 - buffer));
+                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(buffer + 5));
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(255 - buffer));
+                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(buffer + 5));
                         TotalCopied++;
 #endif
                     }

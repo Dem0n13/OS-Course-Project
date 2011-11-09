@@ -99,7 +99,6 @@ namespace OS
             VisualAdapter.DGCatalog = this.Catalog;
             VisualAdapter.DGCellsArray = this.CellsArray;
             VisualAdapter.DGRequests = this.DGRequsts;
-            VisualAdapter.LabelProc = this.label7;
             VisualAdapter.Init();
         }
 

@@ -20,7 +20,6 @@ namespace OS
         public static DataGridView DGCatalog;
         public static DataGridView DGCellsArray;
         public static DataGridView DGRequests;
-        public static Label LabelProc;
 #if UI_REQUEST_EDITOR_ON_EDITOR_FORM
         public static Button EditRequestBtn;
 #endif
@@ -338,7 +337,6 @@ namespace OS
                 EditorPanel.Enabled = false;
             }
 #endif
-            LabelProc.Text = "Следующий процесс: " + TaskManager.Processes[TaskManager.CurrentProcessIndex].ID;
         }
 
 #if UI_REQUEST_EDITOR_ON_MAIN_FORM

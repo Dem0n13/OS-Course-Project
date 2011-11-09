@@ -135,17 +135,17 @@ namespace OS
             }
             int temp = 7; //с какого начинать адреса писать первый файл
             NonRepeatEnum NESForHDD = new NonRepeatEnum(0, 15);
-            
-            Catalog.Add(new CatalogRecord() { Address = 0 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1,FileSize=0,Filename="File1" });
-            Catalog.Add(new CatalogRecord() { Address = 1 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1, FileSize = 0, Filename = "File2" });
-                //Catalog[i] = new CatalogRecord();
-                //Catalog[i].Address = i + GlobalConsts.StartCatalogRecords;
-                //Catalog[i].IsOpen = false;
-                //Catalog[i].StartIndex = NESForHDD.Next();
+
+            Catalog.Add(new CatalogRecord() { Address = 0 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1, FileSize = 0, Filename = "File1.f" });
+            Catalog.Add(new CatalogRecord() { Address = 1 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1, FileSize = 0, Filename = "File2.f" });
+            //Catalog[i] = new CatalogRecord();
+            //Catalog[i].Address = i + GlobalConsts.StartCatalogRecords;
+            //Catalog[i].IsOpen = false;
+            //Catalog[i].StartIndex = NESForHDD.Next();
 
             //инициалицируем File1.f
             //фигарим первый блок и адресуем к каталогу
-            
+
             Catalog[0].StartIndex = temp;
             for (int j = 0; j < GlobalConsts.PageSize; j++)
             {
@@ -176,6 +176,7 @@ namespace OS
             {
                 CellsArray[prev].Data[j] = (byte)Program.RND.Next(0, 256);
             }
+
 
             //инициалицируем result.txt
             //CellsArray[Catalog[1].StartIndex].Next = -1;
