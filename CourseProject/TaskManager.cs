@@ -26,13 +26,16 @@ namespace OS
             Processes = new Process[GlobalConsts.ProcessesCount];
             for (int i = 0; i < GlobalConsts.ProcessesCount; i++)
             {
-                Processes[i] = new Process() { ID = (i + 1).ToString() };
+                Processes[i] = new Process();
             }
             
             // Демо: пусть для 3х процессов А Б В существуют логические пространства А, АБ, В
-            Processes[0].LogicAreas = new TableDescriptor[] { Memory.TableDess[0], Memory.TableDess[1] };
-            Processes[1].LogicAreas = new TableDescriptor[] { Memory.TableDess[1] };
-            Processes[2].LogicAreas = new TableDescriptor[] { Memory.TableDess[2] };
+            Processes[0].ID = "A";
+            Processes[0].LogicAreas = new TableDescriptor[] { Memory.Pages[0] as TableDescriptor, Memory.Pages[1] as TableDescriptor };
+            Processes[1].ID = "Б";
+            Processes[1].LogicAreas = new TableDescriptor[] { Memory.Pages[1] as TableDescriptor };
+            Processes[2].ID = "В";
+            Processes[2].LogicAreas = new TableDescriptor[] { Memory.Pages[2] as TableDescriptor };
             
             // пусть для каждого процесса существуют следующие заявки
             Processes[0].Requests = new Request[GlobalConsts.SizesOfGroup[0]];
