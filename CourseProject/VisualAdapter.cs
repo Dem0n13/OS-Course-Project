@@ -21,6 +21,7 @@ namespace OS
         public static DataGridView DGCellsArray;
         public static DataGridView DGRequests;
         public static Label LabelProc;
+        public static Button StepButton;
 #if UI_REQUEST_EDITOR_ON_EDITOR_FORM
         public static Button EditRequestBtn;
 #endif
@@ -89,7 +90,7 @@ namespace OS
             DGDescriptionPages.Columns[1].HeaderText = "Present";
             DGDescriptionPages.Columns[1].Width = 50;
             DGDescriptionPages.Columns[2].HeaderText = "Мьютекс";
-            DGDescriptionPages.Columns[2].Width = 50;
+            DGDescriptionPages.Columns[2].Width = 54;
             DGDescriptionPages.Columns[3].HeaderText = "Адр. в ФП";
             DGDescriptionPages.Columns[3].Width = 50;
             DGDescriptionPages.Columns[4].HeaderText = "Ссылка";
@@ -221,8 +222,8 @@ namespace OS
 
             DGCatalog.Columns[0].Width = 42;
             DGCatalog.Columns[1].Width = 52;
-            DGCatalog.Columns[2].Width = 50;
-            DGCatalog.Columns[3].Width = 50;
+            DGCatalog.Columns[2].Width = 70;
+            DGCatalog.Columns[3].Width = 70;
             DGCatalog.Columns[4].Width = 50;
 
             //вторая таблица
@@ -338,7 +339,8 @@ namespace OS
                 EditorPanel.Enabled = false;
             }
 #endif
-            LabelProc.Text = "Процесс на выполнение: " + (TaskManager.CurrentProcessIndex == -1 ? "Нет" : TaskManager.Processes[TaskManager.CurrentProcessIndex].ID);
+            //dfhsbf
+            StepButton.Text = "Следующий процесс: " + TaskManager.Processes[TaskManager.CurrentProcessIndex].ID;
         }
 
 #if UI_REQUEST_EDITOR_ON_MAIN_FORM
