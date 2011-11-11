@@ -338,7 +338,7 @@ namespace OS
                 EditorPanel.Enabled = false;
             }
 #endif
-            LabelProc.Text = "Следующий процесс: " + TaskManager.Processes[TaskManager.CurrentProcessIndex].ID;
+            LabelProc.Text = "Процесс на выполнение: " + (TaskManager.CurrentProcessIndex == -1 ? "Нет" : TaskManager.Processes[TaskManager.CurrentProcessIndex].ID);
         }
 
 #if UI_REQUEST_EDITOR_ON_MAIN_FORM
