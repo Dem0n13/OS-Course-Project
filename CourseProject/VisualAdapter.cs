@@ -462,10 +462,10 @@ namespace OS
                 DGDescriptionPages.Rows[i].Cells[3].Value = Memory.PageDess[i].AddressInSwap;
                 DGDescriptionPages.Rows[i].Cells[4].Value = Memory.PageDess[i].TargetAddress;
 #if (WS || WSClock)
-                DGDescriptionPages.Rows[i].Cells[5].Value = (Memory.Pages[i] as PageDescriptor).AgeOfPage;
+                DGDescriptionPages.Rows[i].Cells[5].Value = Memory.PageDess[i].AgeOfPage;
 #endif
 #if (FIFO_SC || ClockWithOneArrow || ClockWithTwoArrows)
-                DGDescriptionPages.Rows[i].Cells[5].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access;
+                DGDescriptionPages.Rows[i].Cells[5].Value = Memory.PageDess[i].Access;
                 //DGDescriptionPages[5, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
 #endif
 #if (NFU ||LRU)
@@ -482,7 +482,7 @@ namespace OS
             {
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
-                    DGPagesInMemory.Rows[i].Cells[j+1].Value = Memory.Pages2[i].Data[j];
+                    DGPagesInMemory.Rows[i].Cells[j+1].Value = Memory.Pages[i].Data[j];
                 }
             }
         }

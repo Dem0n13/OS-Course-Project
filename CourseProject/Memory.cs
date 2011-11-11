@@ -13,7 +13,7 @@ namespace OS
     {
         public static TableDescriptor[] TableDess = new TableDescriptor[GlobalConsts.CountOfGroup];
         public static PageDescriptor[] PageDess = new PageDescriptor[GlobalConsts.PagesCount];
-        public static Page[] Pages2 = new Page[GlobalConsts.PagesAreaSize];
+        public static Page[] Pages = new Page[GlobalConsts.PagesAreaSize];
 
 #if ClockWithTwoArrows
         /// <summary>
@@ -26,7 +26,7 @@ namespace OS
         /// <summary>
         /// Очередь для FIFO
         /// </summary>
-        public static Queue FIFOQueue = new Queue(GlobalConsts.PagesAreaSize);
+        public static Queue<PageDescriptor> FIFOQueue = new Queue<PageDescriptor>(GlobalConsts.PagesAreaSize);
 #endif
 
 #if WS || WSClock
@@ -40,7 +40,7 @@ namespace OS
         /// <summary>
         /// Стрелка часов
         /// </summary>
-        public static int Arrow = GlobalConsts.StartAddressDescriptionPage;
+        public static int Arrow = 0;
 #endif
 
         /// <summary>
@@ -99,14 +99,14 @@ namespace OS
             //инициализируем память под страницы
             for (int i = 0; i < GlobalConsts.PagesAreaSize; i++)
             {
-                Pages2[i] = new Page()
+                Pages[i] = new Page()
                 {
                     Data = new byte[GlobalConsts.PageSize],
                     Address = i
                 };
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
-                    Pages2[i].Data[j] = 0;
+                    Pages[i].Data[j] = 0;
                 }
             }
 
@@ -117,8 +117,8 @@ namespace OS
                 PageDess[i].TargetAddress = FindFreePage();
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
-                    Pages2[PageDess[i].TargetAddress].Dirty = true;
-                    Pages2[PageDess[i].TargetAddress].Data[j] = (byte)Program.RND.Next(0, 256);
+                    Pages[PageDess[i].TargetAddress].Dirty = true;
+                    Pages[PageDess[i].TargetAddress].Data[j] = (byte)Program.RND.Next(0, 256);
                 }
             }
         }
@@ -129,8 +129,8 @@ namespace OS
         /// <returns>Вызвращает незанятую ячейку, либо -1, если не найдена</returns>
         private static int FindFreePage()
         {
-            for (int i = 0; i < Pages2.Length; i++)
-                if (!Pages2[i].Dirty)
+            for (int i = 0; i < Pages.Length; i++)
+                if (!Pages[i].Dirty)
                     return i;
             return -1;
         }
@@ -188,7 +188,7 @@ namespace OS
 #if (WSClock || NFU || FIFO_SC || LRU || ClockWithOneArrow || ClockWithTwoArrows)
             PageDess[desc_a].Access = true;
 #endif
-            data = Pages2[PageDess[desc_a].TargetAddress].Data[offset];
+            data = Pages[PageDess[desc_a].TargetAddress].Data[offset];
             if (offset == 3)
                 PageDess[desc_a].Mutex = false;
             return data;
@@ -255,8 +255,8 @@ namespace OS
 #if (WSClock ||NFU || FIFO_SC ||LRU || ClockWithOneArrow || ClockWithTwoArrows)
             PageDess[desc_a].Access = true;
 #endif
-            Pages2[PageDess[desc_a] .TargetAddress].Data[offset] = data;
-            Pages2[PageDess[desc_a].TargetAddress].Dirty = true;
+            Pages[PageDess[desc_a] .TargetAddress].Data[offset] = data;
+            Pages[PageDess[desc_a].TargetAddress].Dirty = true;
             if (offset == 3)
                 PageDess[desc_a].Mutex = false;
         }
@@ -291,15 +291,15 @@ namespace OS
                             //копируем данные
                             for (int j = 0; j < GlobalConsts.PageSize; j++)
                             {
-                                HDD.CellsArray[i].Data[j] = Pages2[PageDess[AbsoluteAddress].TargetAddress].Data[j];
+                                HDD.CellsArray[i].Data[j] = Pages[PageDess[AbsoluteAddress].TargetAddress].Data[j];
                             }
                             //обнуляем страницу в памяти
-                            for (int j = 0; j < Pages2[PageDess[AbsoluteAddress].TargetAddress].Data.Length; j++)
+                            for (int j = 0; j < Pages[PageDess[AbsoluteAddress].TargetAddress].Data.Length; j++)
                             {
-                                Pages2[PageDess[AbsoluteAddress].TargetAddress].Data[j] = 0;
+                                Pages[PageDess[AbsoluteAddress].TargetAddress].Data[j] = 0;
                             }
                             //скидываем адрес в массиве страниц в ОП
-                            Pages2[PageDess[AbsoluteAddress].TargetAddress].Dirty = false;
+                            Pages[PageDess[AbsoluteAddress].TargetAddress].Dirty = false;
                             PageDess[PageDess[AbsoluteAddress].Address].TargetAddress = -1;          //TODO
                             HDD.CellsArray[i].IsFree = false;
                             //ставим бит присутствия в 0
@@ -317,15 +317,15 @@ namespace OS
                     //копируем данные
                     for (int j = 0; j < GlobalConsts.PageSize; j++)
                     {
-                        HDD.CellsArray[AddressInSwap].Data[j] = Pages2[PageDess[AbsoluteAddress].TargetAddress].Data[j];
+                        HDD.CellsArray[AddressInSwap].Data[j] = Pages[PageDess[AbsoluteAddress].TargetAddress].Data[j];
                     }
                     //обнуляем страницу в памяти
-                    for (int j = 0; j < Pages2[PageDess[AbsoluteAddress].TargetAddress].Data.Length; j++)
+                    for (int j = 0; j < Pages[PageDess[AbsoluteAddress].TargetAddress].Data.Length; j++)
                     {
-                        Pages2[PageDess[AbsoluteAddress].TargetAddress].Data[j] = 0;
+                        Pages[PageDess[AbsoluteAddress].TargetAddress].Data[j] = 0;
                     }
                     //скидываем адрес в массиве страниц в ОП
-                    Pages2[PageDess[AbsoluteAddress].TargetAddress].Dirty = false;
+                    Pages[PageDess[AbsoluteAddress].TargetAddress].Dirty = false;
                     PageDess[PageDess[AbsoluteAddress].Address].TargetAddress = -1; //TODO
                     //ставим бит присутствия в 0
                     PageDess[PageDess[AbsoluteAddress].Address].Present = false; //TODO
@@ -353,12 +353,12 @@ namespace OS
                     //копируем страницу в ОП
                     for (int i = 0; i < GlobalConsts.PageSize; i++)
                     {
-                        Pages2[WhereIs].Data[i] = HDD.CellsArray[PageDess[AbsoluteAddress].AddressInSwap].Data[i];
+                        Pages[WhereIs].Data[i] = HDD.CellsArray[PageDess[AbsoluteAddress].AddressInSwap].Data[i];
                     }
                     //выставляем параметры присутствия в дескрипторе и прочее
                     PageDess[AbsoluteAddress].Present = true;
                     PageDess[AbsoluteAddress].TargetAddress = WhereIs;
-                    Pages2[WhereIs].Dirty = true;   // TODO ниже
+                    Pages[WhereIs].Dirty = true;   // TODO ниже
                     return WhereIs;
                 }
             }
@@ -376,7 +376,7 @@ namespace OS
             return (FIFOQueue.Dequeue() as PageDescriptor).Address;
             //for (int i = CandidatForOverride; i < GlobalConsts.StartAddressAreaOfPages; i++)
             //{
-            //    if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true)
+            //    if (PageDess[i].Mutex == false && PageDess[i].Present == true)
             //    {
             //        CandidatForOverride = i;
             //        return i;
@@ -385,7 +385,7 @@ namespace OS
             ////если не нашли раньше, будет выполняться этот кусок, который найдет до текущего
             //for (int i = GlobalConsts.StartAddressDescriptionPage; i < CandidatForOverride; i++)
             //{
-            //    if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true)
+            //    if (PageDess[i].Mutex == false && PageDess[i].Present == true)
             //    {
             //        CandidatForOverride = i;
             //        return i;
@@ -409,7 +409,7 @@ namespace OS
             for (; ; )
             {
                 //скидываем стрелку в 0 если круг пройден
-                if (Arrow == GlobalConsts.StartAddressAreaOfPages)
+                if (Arrow == GlobalConsts.PagesCount)
                 {
                     //если мы прошли круг но не удалили, снижаем критерий тау
                     if (local_circle == true)
@@ -417,21 +417,21 @@ namespace OS
                         tau--;
                         delta++;
                     }
-                    Arrow = GlobalConsts.StartAddressDescriptionPage;
+                    Arrow = 0;
                     local_circle = true;
                 }
                 //скидываем бит access если он =1 и страница не подходит для удаления
-                if ((Pages[Arrow] as PageDescriptor).Present == true && (Pages[Arrow] as PageDescriptor).Access == true && (Pages[Arrow] as PageDescriptor).Mutex == false)
+                if (PageDess[Arrow].Present == true && PageDess[Arrow].Access == true && PageDess[Arrow].Mutex == false)
                 {
-                    (Pages[Arrow] as PageDescriptor).Access = false;
+                    PageDess[Arrow].Access = false;
                 }
                 //если стрелка указывает на подходящую для удаления страницу - удаляем
-                if ((Pages[Arrow] as PageDescriptor).AgeOfPage >= tau &&  
-                    (Pages[Arrow] as PageDescriptor).Present == true && 
-                    (Pages[Arrow] as PageDescriptor).Access == false &&
-                    (Pages[Arrow] as PageDescriptor).Mutex == false)
+                if (PageDess[Arrow].AgeOfPage >= tau &&
+                    PageDess[Arrow].Present == true &&
+                    PageDess[Arrow].Access == false &&
+                    PageDess[Arrow].Mutex == false)
                 {
-                    (Pages[Arrow] as PageDescriptor).AgeOfPage = 0;
+                    PageDess[Arrow].AgeOfPage = 0;
                     Arrow++;
                     tau += delta;
                     return Arrow-1;
@@ -446,18 +446,18 @@ namespace OS
         /// <returns></returns>
         public static int AgesUp()
         {
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
+            for (int i = 0; i < GlobalConsts.PagesCount; i++)
             {
-                if ((Pages[i] as PageDescriptor).Mutex == true && (Pages[i] as PageDescriptor).Access == true && (Pages[i] as PageDescriptor).Present == true)
+                if (PageDess[i].Mutex == true && PageDess[i].Access == true && PageDess[i].Present == true)
                 {
-                    (Pages[i] as PageDescriptor).AgeOfPage = 0;
-                    //(Pages[i] as PageDescriptor).Access = false;
+                    PageDess[i].AgeOfPage = 0;
+                    //PageDess[i].Access = false;
                 }
                 else
                 {
-                    if ((Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == false && (Pages[i] as PageDescriptor).Mutex == false)
+                    if (PageDess[i].Present == true && PageDess[i].Access == false && PageDess[i].Mutex == false)
                     {
-                        (Pages[i] as PageDescriptor).AgeOfPage++;
+                        PageDess[i].AgeOfPage++;
                     }
                 }
             }
@@ -482,15 +482,15 @@ namespace OS
             for (; ; )
             {
                 //ищем самую старую страницу
-                for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
+                for (int i = 0; i < GlobalConsts.PagesCount; i++)
                 {
                     //удовлетворяет ли страница общим критериям?
-                    if ((Pages[i] as PageDescriptor).AgeOfPage >= tau  && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Mutex==false)
+                    if (PageDess[i].AgeOfPage >= tau && PageDess[i].Present == true && PageDess[i].Mutex == false)
                     {
                         //больше ли самой старой?
-                        if ((Pages[i] as PageDescriptor).AgeOfPage > MaxAge)
+                        if (PageDess[i].AgeOfPage > MaxAge)
                         {
-                            MaxAge = (Pages[i] as PageDescriptor).AgeOfPage;
+                            MaxAge = PageDess[i].AgeOfPage;
                             AddressMaxPage = i;
                             IsFinded = true;
                         }
@@ -500,7 +500,7 @@ namespace OS
                 if (IsFinded == true)
                 {
                     IsFinded = false;
-                    (Pages[AddressMaxPage] as PageDescriptor).AgeOfPage = 0;
+                    PageDess[AddressMaxPage].AgeOfPage = 0;
                     tau += delta;
                     return AddressMaxPage;
                 }
@@ -516,19 +516,19 @@ namespace OS
         /// <returns></returns>
         public static int AgesUp()
         {
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
+            for (int i = 0; i < GlobalConsts.PagesCount; i++)
             {
                 //если занято, возраст = 0
-                if ((Pages[i] as PageDescriptor).Mutex == true  && (Pages[i] as PageDescriptor).Present == true)
+                if (PageDess[i].Mutex == true && PageDess[i].Present == true)
                 {
-                    (Pages[i] as PageDescriptor).AgeOfPage = 0;
+                    PageDess[i].AgeOfPage = 0;
                 }
                 //иначе если не занято то ++
                 else
                 {
-                    if ((Pages[i] as PageDescriptor).Present == true  && (Pages[i] as PageDescriptor).Mutex == false)
+                    if (PageDess[i].Present == true && PageDess[i].Mutex == false)
                     {
-                        (Pages[i] as PageDescriptor).AgeOfPage++;
+                        PageDess[i].AgeOfPage++;
                     }
                 }
             }
@@ -591,20 +591,20 @@ namespace OS
         {
             int MinCounter = int.MaxValue;
             int MinAddress = 0;
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
+            for (int i = 0; i < GlobalConsts.PagesCount; i++)
             {
-                if ((Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == false && (Pages[i] as PageDescriptor).Mutex == false)
+                if (PageDess[i].Present == true && PageDess[i].Access == false && PageDess[i].Mutex == false)
                 {
-                    if ((Pages[i] as PageDescriptor).Counter < MinCounter)
+                    if (PageDess[i].Counter < MinCounter)
                     {
-                        MinCounter = (Pages[i] as PageDescriptor).Counter;
+                        MinCounter = PageDess[i].Counter;
                         MinAddress = i;
                     }
                 }
             }
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
+            for (int i = 0; i < GlobalConsts.PagesCount; i++)
             {
-                (Pages[i] as PageDescriptor).Counter = 0;
+                PageDess[i].Counter = 0;
             }
             return MinAddress;
         }
@@ -615,13 +615,13 @@ namespace OS
         /// <returns></returns>
         public static void RefreshDescriptorsState()
         {
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
+            for (int i = 0; i < GlobalConsts.PagesCount; i++)
             {
                 //если к страничке обращаются, увеличиваем счетчики сбрасываем access
-                if ((Pages[i] as PageDescriptor).Access == true)
+                if (PageDess[i].Access == true)
                 {
-                    (Pages[i] as PageDescriptor).Access = false;
-                    (Pages[i] as PageDescriptor).Counter++;
+                    PageDess[i].Access = false;
+                    PageDess[i].Counter++;
                 }
             }
         }
@@ -654,27 +654,27 @@ namespace OS
             //{
             //    for (int i = CandidatForOverride; i < GlobalConsts.StartAddressAreaOfPages; i++)
             //    {
-            //        if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == false)
+            //        if (PageDess[i].Mutex == false && PageDess[i].Present == true && PageDess[i].Access == false)
             //        {
             //            CandidatForOverride = i;
             //            return i;
             //        }
-            //        if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == true)
+            //        if (PageDess[i].Mutex == false && PageDess[i].Present == true && PageDess[i].Access == true)
             //        {
-            //            (Pages[i] as PageDescriptor).Access = false;
+            //            PageDess[i].Access = false;
             //        }
             //    }
             //    //если не нашли раньше, будет выполняться этот кусок, который найдет до текущего
             //    for (int i = GlobalConsts.StartAddressDescriptionPage; i < CandidatForOverride; i++)
             //    {
-            //        if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == false)
+            //        if (PageDess[i].Mutex == false && PageDess[i].Present == true && PageDess[i].Access == false)
             //        {
             //            CandidatForOverride = i;
             //            return i;
             //        }
-            //        if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == true)
+            //        if (PageDess[i].Mutex == false && PageDess[i].Present == true && PageDess[i].Access == true)
             //        {
-            //            (Pages[i] as PageDescriptor).Access = false;
+            //            PageDess[i].Access = false;
             //        }
             //    }
             //}
@@ -697,41 +697,41 @@ namespace OS
             for (; ; )
             {
                 //идем от стрелки до конца
-                for (int i = Arrow; i < GlobalConsts.StartAddressAreaOfPages; i++)
+                for (int i = Arrow; i < GlobalConsts.PagesCount; i++)
                 {
                     //если страница подходит для замещения - возвращаем адрес
-                    if ((Pages[i] as PageDescriptor).Present == true &&
-                        (Pages[i] as PageDescriptor).Mutex == false &&
-                        (Pages[i] as PageDescriptor).Access == false)
+                    if (PageDess[i].Present == true &&
+                        PageDess[i].Mutex == false &&
+                        PageDess[i].Access == false)
                     {
                         Arrow = i;
                         return i;
                     }
                     //если у страницы бит Access=1, скидываем
-                    if ((Pages[i] as PageDescriptor).Present == true &&
-                        (Pages[i] as PageDescriptor).Mutex == false &&
-                        (Pages[i] as PageDescriptor).Access == true)
+                    if (PageDess[i].Present == true &&
+                        PageDess[i].Mutex == false &&
+                        PageDess[i].Access == true)
                     {
-                        (Pages[i] as PageDescriptor).Access = false;
+                        PageDess[i].Access = false;
                     }
                 }
                 //идем от начала до стрелки
-                for (int i = GlobalConsts.StartAddressDescriptionPage; i < Arrow; i++)
+                for (int i = 0; i < Arrow; i++)
                 {
                     //если страница подходит для замещения - возвращаем адрес
-                    if ((Pages[i] as PageDescriptor).Present == true &&
-                        (Pages[i] as PageDescriptor).Mutex == false &&
-                        (Pages[i] as PageDescriptor).Access == false)
+                    if (PageDess[i].Present == true &&
+                        PageDess[i].Mutex == false &&
+                        PageDess[i].Access == false)
                     {
                         Arrow = i;
                         return i;
                     }
                     //если у страницы бит Access=1, скидываем
-                    if ((Pages[i] as PageDescriptor).Present == true &&
-                        (Pages[i] as PageDescriptor).Mutex == false &&
-                        (Pages[i] as PageDescriptor).Access == true)
+                    if (PageDess[i].Present == true &&
+                        PageDess[i].Mutex == false &&
+                        PageDess[i].Access == true)
                     {
-                        (Pages[i] as PageDescriptor).Access = false;
+                        PageDess[i].Access = false;
                     }
                 }
             }
@@ -746,9 +746,9 @@ namespace OS
         /// </summary>
         public static void GoArrow()
         {
-            if ((Pages[Arrow] as PageDescriptor).Present == true && (Pages[Arrow] as PageDescriptor).Mutex == false && (Pages[Arrow] as PageDescriptor).Access == true)
-                (Pages[Arrow] as PageDescriptor).Access = false;
-            Arrow = Arrow == GlobalConsts.StartAddressAreaOfPages - 1 ? GlobalConsts.StartAddressDescriptionPage : ++Arrow;
+            if (PageDess[Arrow].Present == true && PageDess[Arrow].Mutex == false && PageDess[Arrow].Access == true)
+                PageDess[Arrow].Access = false;
+            Arrow = Arrow == GlobalConsts.PagesCount - 1 ? 0 : ++Arrow;
         }
 
         /// <summary>
@@ -760,20 +760,20 @@ namespace OS
             while (true)
             {
                 //идем от стрелки до конца
-                for (int i = CandidatForOverride; i < GlobalConsts.StartAddressAreaOfPages; i++)
+                for (int i = CandidatForOverride; i < GlobalConsts.PagesCount; i++)
                 {
                     //если страница подходит для замещения - возвращаем адрес
-                    if ((Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Access == false)
+                    if (PageDess[i].Present == true && PageDess[i].Mutex == false && PageDess[i].Access == false)
                     {
                         CandidatForOverride = i + 1;
                         return i;
                     }
                 }
                 //идем от начала до стрелки
-                for (int i = GlobalConsts.StartAddressDescriptionPage; i < CandidatForOverride; i++)
+                for (int i = 0; i < CandidatForOverride; i++)
                 {
                     //если страница подходит для замещения - возвращаем адрес
-                    if ((Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Access == false)
+                    if (PageDess[i].Present == true && PageDess[i].Mutex == false && PageDess[i].Access == false)
                     {
                         CandidatForOverride = i + 1;
                         return i;
