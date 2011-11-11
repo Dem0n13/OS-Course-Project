@@ -141,14 +141,9 @@ namespace OS
     #region Основная память
 
     /// <summary>
-    /// Интерфейс, описывает все, что может содержать страница основной памяти
-    /// </summary>
-    public interface IMemoryPage {}
-
-    /// <summary>
     /// Дескриптор таблицы
     /// </summary>
-    public class TableDescriptor : IMemoryPage
+    public class TableDescriptor
     {
         /// <summary>
         /// Адрес таблицы дескрипторов в памяти 
@@ -169,7 +164,7 @@ namespace OS
     /// <summary>
     /// Дескриптор страницы
     /// </summary>
-    public class PageDescriptor : IMemoryPage
+    public class PageDescriptor
     {
         /// <summary>
         /// Адрес страницы
@@ -222,7 +217,7 @@ namespace OS
     /// <summary>
     /// Сама страница с данными
     /// </summary>
-    public class Page : IMemoryPage
+    public class Page
     {
         /// <summary>
         /// Массив байтов страницы
