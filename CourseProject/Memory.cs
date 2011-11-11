@@ -107,7 +107,7 @@ namespace OS
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
                     Pages[i].Data[j] = 0;
-                }
+                }               
             }
 
             // демо пример: первая таблица уже проинициализирована
@@ -120,6 +120,7 @@ namespace OS
                     Pages[PageDess[i].TargetAddress].Dirty = true;
                     Pages[PageDess[i].TargetAddress].Data[j] = (byte)Program.RND.Next(0, 256);
                 }
+                FIFOQueue.Enqueue(PageDess[i]);
             }
         }
 
@@ -177,7 +178,7 @@ namespace OS
                 RestoreFromSwap(desc_a);
 #if FIFO || FIFO_SC
                 //заносим элемент в очередь
-                if (offset == 0)
+                //if (offset == 0)
                 {
                     FIFOQueue.Enqueue(PageDess[desc_a]);
                 }
