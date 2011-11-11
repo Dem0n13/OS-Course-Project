@@ -166,7 +166,7 @@ namespace OS
                 RestoreFromSwap(desc_a);
 #if FIFO || FIFO_SC
                 //заносим элемент в очередь
-                if (offset == 0)
+                //if (offset == 0)
                 {
                     FIFOQueue.Enqueue(Pages[desc_a] as PageDescriptor);
                 }
