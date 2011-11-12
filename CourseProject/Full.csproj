@@ -39,7 +39,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;FS_WITH_INDEX_ENUM TM_RR NFU UI_REQUEST_EDITOR_ON_EDITOR_FORM IO_TWO_BYTES_PER_STEP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;FS_WITH_INDEX_SEQ TM_RR LRU UI_REQUEST_EDITOR_ON_EDITOR_FORM IO_TWO_BYTES_PER_STEP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -74,7 +74,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Memory.cs" />
-    <Compile Include="NonRepeatEnum.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestEditor.cs">
