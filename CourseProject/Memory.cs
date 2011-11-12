@@ -120,7 +120,9 @@ namespace OS
                     Pages[PageDess[i].TargetAddress].Dirty = true;
                     Pages[PageDess[i].TargetAddress].Data[j] = (byte)Program.RND.Next(0, 256);
                 }
+#if FIFO || FIFO_SC
                 FIFOQueue.Enqueue(PageDess[i]);
+#endif
             }
         }
 
@@ -178,10 +180,7 @@ namespace OS
                 RestoreFromSwap(desc_a);
 #if FIFO || FIFO_SC
                 //заносим элемент в очередь
-                //if (offset == 0)
-                {
-                    FIFOQueue.Enqueue(PageDess[desc_a]);
-                }
+                FIFOQueue.Enqueue(PageDess[desc_a]);
 #endif
             }
             // проверки пройдены, считываем байт
@@ -265,7 +264,7 @@ namespace OS
         /// <summary>
         /// Выгружает страницу из ОП.
         /// </summary>
-        /// <param name="UPageDescriptor">Абсолютный адрес дескриптора</param>
+        /// <param name="AbsoluteAddress">Абсолютный адрес дескриптора</param>
         /// <returns>Адрес, куда будет перемещает страница в ФП(-1 - неудача)</returns>
         private static int UnloadToSwap(int AbsoluteAddress)
         {
@@ -301,11 +300,11 @@ namespace OS
                             }
                             //скидываем адрес в массиве страниц в ОП
                             Pages[PageDess[AbsoluteAddress].TargetAddress].Dirty = false;
-                            PageDess[PageDess[AbsoluteAddress].Address].TargetAddress = -1;          //TODO
+                            PageDess[AbsoluteAddress].TargetAddress = -1;
                             HDD.CellsArray[i].IsFree = false;
                             //ставим бит присутствия в 0
-                            PageDess[PageDess[AbsoluteAddress].Address].Present = false;              //TODO
-                            PageDess[PageDess[AbsoluteAddress].Address].AddressInSwap = i;            //TODO
+                            PageDess[AbsoluteAddress].Present = false;
+                            PageDess[AbsoluteAddress].AddressInSwap = i;
                             //выходим с адресом, куда записали
                             return i;
                         }
@@ -327,9 +326,9 @@ namespace OS
                     }
                     //скидываем адрес в массиве страниц в ОП
                     Pages[PageDess[AbsoluteAddress].TargetAddress].Dirty = false;
-                    PageDess[PageDess[AbsoluteAddress].Address].TargetAddress = -1; //TODO
+                    PageDess[AbsoluteAddress].TargetAddress = -1;
                     //ставим бит присутствия в 0
-                    PageDess[PageDess[AbsoluteAddress].Address].Present = false; //TODO
+                    PageDess[AbsoluteAddress].Present = false;
                     return PageDess[AbsoluteAddress].AddressInSwap;
                 }
             }
@@ -348,7 +347,6 @@ namespace OS
             {
                 //ищем свободное место в ОП
                 int WhereIs = FindFreePage();
-                //если все заебись
                 if (WhereIs != -1 && PageDess[AbsoluteAddress].AddressInSwap != -1 && PageDess[AbsoluteAddress].Present == false)
                 {
                     //копируем страницу в ОП
@@ -359,7 +357,7 @@ namespace OS
                     //выставляем параметры присутствия в дескрипторе и прочее
                     PageDess[AbsoluteAddress].Present = true;
                     PageDess[AbsoluteAddress].TargetAddress = WhereIs;
-                    Pages[WhereIs].Dirty = true;   // TODO ниже
+                    Pages[WhereIs].Dirty = true;
                     return WhereIs;
                 }
             }
@@ -375,23 +373,6 @@ namespace OS
         public static int ReplacementAlgorithm()
         {
             return (FIFOQueue.Dequeue() as PageDescriptor).Address;
-            //for (int i = CandidatForOverride; i < GlobalConsts.StartAddressAreaOfPages; i++)
-            //{
-            //    if (PageDess[i].Mutex == false && PageDess[i].Present == true)
-            //    {
-            //        CandidatForOverride = i;
-            //        return i;
-            //    }
-            //}
-            ////если не нашли раньше, будет выполняться этот кусок, который найдет до текущего
-            //for (int i = GlobalConsts.StartAddressDescriptionPage; i < CandidatForOverride; i++)
-            //{
-            //    if (PageDess[i].Mutex == false && PageDess[i].Present == true)
-            //    {
-            //        CandidatForOverride = i;
-            //        return i;
-            //    }
-            //}
         }
 #endif
         #endregion
@@ -651,35 +632,6 @@ namespace OS
                 }
 
             }
-            //for (; ; )
-            //{
-            //    for (int i = CandidatForOverride; i < GlobalConsts.StartAddressAreaOfPages; i++)
-            //    {
-            //        if (PageDess[i].Mutex == false && PageDess[i].Present == true && PageDess[i].Access == false)
-            //        {
-            //            CandidatForOverride = i;
-            //            return i;
-            //        }
-            //        if (PageDess[i].Mutex == false && PageDess[i].Present == true && PageDess[i].Access == true)
-            //        {
-            //            PageDess[i].Access = false;
-            //        }
-            //    }
-            //    //если не нашли раньше, будет выполняться этот кусок, который найдет до текущего
-            //    for (int i = GlobalConsts.StartAddressDescriptionPage; i < CandidatForOverride; i++)
-            //    {
-            //        if (PageDess[i].Mutex == false && PageDess[i].Present == true && PageDess[i].Access == false)
-            //        {
-            //            CandidatForOverride = i;
-            //            return i;
-            //        }
-            //        if (PageDess[i].Mutex == false && PageDess[i].Present == true && PageDess[i].Access == true)
-            //        {
-            //            PageDess[i].Access = false;
-            //        }
-            //    }
-            //}
-            //сюда не должно доходить
             return -1;
         }
 

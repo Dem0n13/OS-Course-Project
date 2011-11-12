@@ -41,7 +41,6 @@ namespace OS
                 CellsArray[i].IsFree = true;
                 CellsArray[i].Data = new byte[GlobalConsts.PageSize];
             }
-            //NonRepeatEnum NESForHDD = new NonRepeatEnum(0, GlobalConsts.HDDCellsCount - 1);
             for (int i = 0; i < GlobalConsts.CatalogRecordsCount; i++)
             {
                 Catalog.Add(new CatalogRecord() { Address = i + GlobalConsts.StartCatalogRecords, IsOpen = false, FileSize = 0 });
@@ -49,7 +48,6 @@ namespace OS
 
             //инициалицируем start.txt
             Catalog[0].Filename = "File1.f";
-            //NonRepeatEnum CatalogIndexses = new NonRepeatEnum(0, GlobalConsts.HDDCellsCount - 1);
             int temp = 7;
             for (int i = 0; i < 5; i++)
             {
@@ -66,55 +64,6 @@ namespace OS
 
             //инициалицируем File2.f
             Catalog[1].Filename = "File2.f";
-
-
-            //// Инициализируем массив данных
-            //for (int i = 0; i < GlobalConsts.HDDCellsCount + SwapFileSize; i++)
-            //{
-            //    //ставим адрес у ячейки
-            //    CellsArray[i] = new HDDCell()
-            //        {
-            //            Address = i
-            //        };
-            //    //заполняем файловые блоки инфой
-            //    CellsArray[i].Data = new byte[GlobalConsts.PageSize];
-            //    for (int j = 0; j < GlobalConsts.PageSize; j++)
-            //    {
-
-            //        if (i < GlobalConsts.HDDCellsCount)
-            //        {
-            //            CellsArray[i].IsFree = false;
-            //            CellsArray[i].Data[j] = (byte)Program.RND.Next(0, 256);
-            //        }
-            //        if (i >= GlobalConsts.HDDCellsCount && i < GlobalConsts.HDDCellsCount + SwapFileSize)
-            //        {
-
-            //            CellsArray[i].IsFree = true;
-            //            CellsArray[i].Data[j] = 0;
-            //        }
-            //    }
-            //}
-
-            //NonRepeatEnum CatalogIndexses = new NonRepeatEnum(0, 15);
-            //// Присвоение адреса каталогу
-            //for (int i = 0; i < GlobalConsts.CatalogRecordsCount; i++)
-            //{
-            //    Catalog[i] = new CatalogRecord()
-            //    {
-            //        Address = GlobalConsts.StartCatalogRecords + i,
-            //        Indexes = new int[4]
-            //    };
-            //    for (int j = 0; j < 4; j++)
-            //    {
-            //        Catalog[i].Indexes[j] = CatalogIndexses.Next();
-            //    }
-            //}
-            
-            //        Catalog[0].Filename = "Start.txt";
-            //        Catalog[1].Filename = "Result.txt";
-                    
-            //        Catalog[0].IsOpen = false;
-            //        Catalog[1].IsOpen = false;
 
 #endif
             #endregion;
@@ -134,18 +83,10 @@ namespace OS
                 CellsArray[i].Data = new byte[GlobalConsts.PageSize];
             }
             int temp = 7; //с какого начинать адреса писать первый файл
-            NonRepeatEnum NESForHDD = new NonRepeatEnum(0, 15);
-            
-            Catalog.Add(new CatalogRecord() { Address = 0 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1,FileSize=0,Filename="File1" });
-            Catalog.Add(new CatalogRecord() { Address = 1 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1, FileSize = 0, Filename = "File2" });
-                //Catalog[i] = new CatalogRecord();
-                //Catalog[i].Address = i + GlobalConsts.StartCatalogRecords;
-                //Catalog[i].IsOpen = false;
-                //Catalog[i].StartIndex = NESForHDD.Next();
 
-            //инициалицируем File1.f
-            //фигарим первый блок и адресуем к каталогу
-            
+            Catalog.Add(new CatalogRecord() { Address = 0 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1, FileSize = 0, Filename = "File1" });
+            Catalog.Add(new CatalogRecord() { Address = 1 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1, FileSize = 0, Filename = "File2" });
+
             Catalog[0].StartIndex = temp;
             for (int j = 0; j < GlobalConsts.PageSize; j++)
             {
@@ -169,7 +110,7 @@ namespace OS
                 CellsArray[prev].Next = temp;
                 prev = CellsArray[prev].Next;
             }
-            ////конец файла start.txt+1блок
+            // конец файла start.txt+1блок
             CellsArray[prev].Next = -1;
             CellsArray[prev].IsFree = false;
             for (int j = 0; j < GlobalConsts.PageSize; j++)
@@ -177,75 +118,7 @@ namespace OS
                 CellsArray[prev].Data[j] = (byte)Program.RND.Next(0, 256);
             }
 
-            //инициалицируем result.txt
-            //CellsArray[Catalog[1].StartIndex].Next = -1;
-            //CellsArray[Catalog[1].StartIndex].IsFree = false;
-            //for (int j = 0; j < GlobalConsts.PageSize; j++)
-            //{
-            //    CellsArray[Catalog[1].StartIndex].Data[j] = (byte)Program.RND.Next(0, 256);
-            //}
-
-
             Catalog[0].IsOpen = false;
-
-
-            
-                    //for (int i = 0; i < GlobalConsts.HDDCellsCount + SwapFileSize; i++)
-                    //{
-                    //    //ставим адрес у ячейки
-                    //    CellsArray[i] = new HDDCell()
-                    //        {
-                    //            Address = i
-                    //        };
-                    //    //заполняем файловые блоки инфой
-                    //    CellsArray[i].Data = new byte[GlobalConsts.PageSize];
-                    //    for (int j = 0; j < GlobalConsts.PageSize; j++)
-                    //    {
-
-                    //        if (i < GlobalConsts.HDDCellsCount)
-                    //        {
-                    //            CellsArray[i].IsFree = false;
-                    //            CellsArray[i].Data[j] = (byte)Program.RND.Next(0, 256);
-                    //        }
-                    //        if (i >= GlobalConsts.HDDCellsCount && i < GlobalConsts.HDDCellsCount + SwapFileSize)
-                    //        {
-                    //            CellsArray[i].IsFree = true;
-                    //            CellsArray[i].Data[j] = 0;
-                    //            CellsArray[i].Next = -1;
-                    //        }
-                    //    }
-                    //}
-
-                    ////связываем файловые блоки последовательностью
-                    //NonRepeatEnum NESForHDD = new NonRepeatEnum(0, 15);
-                    //for (int i = 0; i < Catalog.Length; i++)
-                    //{
-                    //    Catalog[i] = new CatalogRecord()
-                    //    {
-                    //        Address = i+GlobalConsts.StartCatalogRecords,
-                    //        IsOpen = false,
-                    //        StartIndex = NESForHDD.Next()
-                    //    };
-                    //}
-                    //for (int i = 0; i < Catalog.Length; i++)
-                    //{
-                    //    CellsArray[Catalog[i].StartIndex].Next = NESForHDD.Next();
-                    //    int prev = CellsArray[Catalog[i].StartIndex].Next;
-                    //    for (int j = 0; j < 2; j++)
-                    //    {
-                    //        CellsArray[prev].Next = NESForHDD.Next();
-                    //        prev = CellsArray[prev].Next;
-                    //    }
-                    //    //конец файла
-                    //    CellsArray[prev].Next = -1;
-                    //}
-
-                    //Catalog[0].Filename = "Start.txt";
-                    //Catalog[1].Filename = "Result.txt";
-                    
-                    //Catalog[0].IsOpen = false;
-                    //Catalog[1].IsOpen = false;
-
 #endif
             #endregion;
         }
@@ -284,7 +157,7 @@ namespace OS
             }
 
             //попытка прочесть из несуществующего блока
-            if (IsRead == true && fileblock>Catalog[FindFile(filename)].FileSize-1)
+            if (IsRead == true && fileblock > Catalog[FindFile(filename)].FileSize - 1)
             {
                 return false;
             }
@@ -319,11 +192,11 @@ namespace OS
             int block_a = Catalog[file_i].Indexes[fileblock];
 #endif
 #if FS_WITH_INDEX_SEQ
-            int cur_index=Catalog[file_i].StartIndex;
+            int cur_index = Catalog[file_i].StartIndex;
             int counter = 0;
-            while (CellsArray[cur_index].Next!=-1)
+            while (CellsArray[cur_index].Next != -1)
             {
-                if (counter==fileblock)
+                if (counter == fileblock)
                 {
                     break;
                 }
@@ -373,9 +246,9 @@ namespace OS
             }
             int cur_index = Catalog[file_i].StartIndex;
             int counter = 0;
-            while (CellsArray[cur_index].Next!=-1)
+            while (CellsArray[cur_index].Next != -1)
             {
-                if (counter==fileblock)
+                if (counter == fileblock)
                 {
                     break;
                 }
@@ -384,7 +257,7 @@ namespace OS
             }
             while (counter < fileblock)
             {
-                cur_index=AddFileBlock(file_i);
+                cur_index = AddFileBlock(file_i);
                 counter++;
             }
             int block_a = cur_index;
@@ -433,16 +306,15 @@ namespace OS
                 if (Catalog[file].StartIndex != -1)
                 {
                     //ищем самую последнюю ячейку(Next= -1)
-                    //while (CellsArray[CurrentFileBlock].Next != -1)
-                    for (;;)
+                    for (; ; )
                     {
                         if (CellsArray[CurrentFileBlock].Next == -1)
                         {
                             break;
                         }
                         CurrentFileBlock = CellsArray[CurrentFileBlock].Next;
-                    }                    
-                    
+                    }
+
                     //нашли, ставим адрес Next найденой свободной
                     CellsArray[CurrentFileBlock].Next = FindFreeFileBlock();
                     CellsArray[CellsArray[CurrentFileBlock].Next].IsFree = false;
@@ -458,7 +330,7 @@ namespace OS
                 }
             }
             return -1;//файла нет
-            
+
         }
 
         /// <summary>
@@ -479,7 +351,7 @@ namespace OS
 
         public static void CreateFile(String FileName)
         {
-            Catalog.Add(new CatalogRecord() { Address = Catalog.Count+GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1,Filename=FileName }); ;
+            Catalog.Add(new CatalogRecord() { Address = Catalog.Count + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1, Filename = FileName }); ;
         }
 #endif
     }
