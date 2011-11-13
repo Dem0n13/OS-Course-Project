@@ -26,9 +26,13 @@ namespace OS
             Processes = new Process[GlobalConsts.ProcessesCount];
             for (int i = 0; i < GlobalConsts.ProcessesCount; i++)
             {
-                Processes[i] = new Process() { ID = (i + 1).ToString() };
+                Processes[i] = new Process();
             }
-            
+
+            Processes[0].ID = "A";
+            Processes[1].ID = "Б";
+            Processes[2].ID = "В";
+
             // Демо: пусть для 3х процессов А Б В существуют логические пространства А, АБ, В
             Processes[0].LogicAreas = new TableDescriptor[] { Memory.TableDess[0], Memory.TableDess[1] };
             Processes[1].LogicAreas = new TableDescriptor[] { Memory.TableDess[1] };
@@ -136,11 +140,11 @@ namespace OS
                     {
                         // считываем и записываем измененное
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(255 - buffer));
+                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(buffer*2));
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(255 - buffer));
+                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(buffer*2));
                         TotalCopied++;
 #endif
                     }
