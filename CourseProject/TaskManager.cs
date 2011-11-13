@@ -173,7 +173,7 @@ namespace OS
 
 #if TM_RR
         /// <summary>
-        /// Поиск нового процесса RoundRobin
+        /// Поиск нового процесса  RoundRobin
         /// </summary>
         /// <returns>Возвращает номер процесса на выполнение. -1 - нет процесса для выполнения</returns>
         private static int FindNextProcess()
