@@ -31,7 +31,6 @@ namespace OS
         {
             CurrentNumber = 0;
             //инициализация массива
-            //по хорошему, нужно проверить, что за входящие значения сюда идут, но я не думаю, что мы станем писать сюда below>above
             Enumeration = new int[above - below + 1];
 
             int buff = 0;
@@ -55,7 +54,6 @@ namespace OS
                 IsBe = false;
             }
         }
-
         /// <summary>
         /// Возвращает следующее случайное число
         /// </summary>
@@ -64,12 +62,10 @@ namespace OS
         {
             if (CurrentNumber < Enumeration.Length)
             {
-
                 CurrentNumber++;
                 return Enumeration[CurrentNumber - 1];
             }
             else
-
                 return -1;
         }
     }

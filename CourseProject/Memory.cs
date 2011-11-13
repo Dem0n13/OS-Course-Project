@@ -16,33 +16,15 @@ namespace OS
         /// </summary>
         public static IMemoryPage[] Pages = new IMemoryPage[GlobalConsts.PagesCount + GlobalConsts.CountOfGroup + GlobalConsts.PagesAreaSize];
 
-#if ClockWithTwoArrows
-        /// <summary>
-        /// Абсолютный адрес дескриптора, страницу которой мы будем замещать
-        /// </summary>
-        public static int CandidatForOverride=GlobalConsts.StartAddressDescriptionPage;
-#endif
-
-#if FIFO || FIFO_SC
-        /// <summary>
-        /// Очередь для FIFO
-        /// </summary>
-        public static Queue FIFOQueue = new Queue(GlobalConsts.PagesAreaSize);
-#endif
-
-#if WS || WSClock
         /// <summary>
         /// Тау время. Может принимать различные значения
         /// </summary>
         public static int tau = 2;
-#endif
 
-#if ClockWithOneArrow || ClockWithTwoArrows|| WSClock
         /// <summary>
         /// Стрелка часов
         /// </summary>
         public static int Arrow = GlobalConsts.StartAddressDescriptionPage;
-#endif
 
         /// <summary>
         /// Инициализация начальных переменных
@@ -82,18 +64,9 @@ namespace OS
                     TargetAddress = -1,
                     Mutex = false,
                     AddressInSwap = -1,
-                    Address = i
-#if (WS || WSClock)
-                    ,AgeOfPage=0
-#endif
-#if (WSClock || FIFO_SC || LRU || NFU || ClockWithOneArrow)
-,
-                    Access=false
-#endif
-#if NFU||LRU
-                    ,Counter = 0
-#endif
-                   
+                    Address = i,
+                    AgeOfPage=0,
+                    Access=false                   
                 };
             }
 
@@ -164,19 +137,10 @@ namespace OS
                 UnloadToSwap(ReplacementAlgorithm());
                 // восстанавливаем страницу со swap
                 RestoreFromSwap(desc_a);
-#if FIFO || FIFO_SC
-                //заносим элемент в очередь
-                //if (offset == 0)
-                {
-                    FIFOQueue.Enqueue(Pages[desc_a] as PageDescriptor);
-                }
-#endif
             }
             // проверки пройдены, считываем байт
             (Pages[desc_a] as PageDescriptor).Mutex = true;
-#if (WSClock || NFU || FIFO_SC || LRU || ClockWithOneArrow || ClockWithTwoArrows)
             (Pages[desc_a] as PageDescriptor).Access = true;
-#endif
             data = (Pages[(Pages[desc_a] as PageDescriptor).TargetAddress] as Page).Data[offset];
             if (offset == 3)
                 (Pages[desc_a] as PageDescriptor).Mutex = false;
@@ -212,13 +176,6 @@ namespace OS
                     {
                         (Pages[desc_a] as PageDescriptor).TargetAddress = FindFreePage(); // присваиваем ссылку дескриптору
                     }
-#if FIFO || FIFO_SC
-                    //заносим элемент в очередь
-                    if (offset == 0)
-                    {
-                        FIFOQueue.Enqueue(Pages[desc_a] as PageDescriptor);
-                    }
-#endif
                 }
                 // иначе страница в ФП
                 else
@@ -227,13 +184,6 @@ namespace OS
                     UnloadToSwap(ReplacementAlgorithm());
                     // восстанавливаем страницу со swap
                     RestoreFromSwap(desc_a);
-#if FIFO || FIFO_SC
-                    //заносим элемент в очередь
-                    if (offset == 0)
-                    {
-                        FIFOQueue.Enqueue(Pages[desc_a] as PageDescriptor);
-                    }
-#endif
                 }
             }
 
@@ -267,7 +217,6 @@ namespace OS
                 {
                     return -1;
                 }
-
                 //если страницы нет на swap'e
                 if (AddressInSwap == -1)
                 {
@@ -336,7 +285,6 @@ namespace OS
             {
                 //ищем свободное место в ОП
                 int WhereIs = FindFreePage();
-                //если все заебись
                 if (WhereIs != -1 && (Pages[AbsoluteAddress] as PageDescriptor).AddressInSwap != -1 && (Pages[AbsoluteAddress] as PageDescriptor).Present == false)
                 {
                     //копируем страницу в ОП
@@ -354,38 +302,6 @@ namespace OS
             return -1;
         }
 
-        #region FIFO
-#if FIFO
-        /// <summary>
-        /// Поиск замещаемого элемента по алгоритму FIFO
-        /// </summary>
-        /// <returns>Абсолютный адрес дескриптора для замещения</returns>
-        public static int ReplacementAlgorithm()
-        {
-            return (FIFOQueue.Dequeue() as PageDescriptor).Address;
-            //for (int i = CandidatForOverride; i < GlobalConsts.StartAddressAreaOfPages; i++)
-            //{
-            //    if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true)
-            //    {
-            //        CandidatForOverride = i;
-            //        return i;
-            //    }
-            //}
-            ////если не нашли раньше, будет выполняться этот кусок, который найдет до текущего
-            //for (int i = GlobalConsts.StartAddressDescriptionPage; i < CandidatForOverride; i++)
-            //{
-            //    if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true)
-            //    {
-            //        CandidatForOverride = i;
-            //        return i;
-            //    }
-            //}
-        }
-#endif
-        #endregion
-
-        #region WSClock
-#if WSClock
         /// <summary>
         /// Поиск замещаемого элемента по алгоритму WSClock
         /// </summary>
@@ -452,325 +368,5 @@ namespace OS
             }
             return 1;
         }
-#endif
-        #endregion
-
-        #region WS
-#if WS
-        /// <summary>
-        /// Поиск замещаемого элемента по алгоритму WS
-        /// </summary>
-        /// <returns>Абсолютный адрес дескриптора для замещения</returns>
-        public static int ReplacementAlgorithm()
-        {
-            //определяем возраст для каждой страницы
-            int delta = 0;
-            int MaxAge = 0;
-            int AddressMaxPage=0;
-            bool IsFinded = false;
-            for (; ; )
-            {
-                //ищем самую старую страницу
-                for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
-                {
-                    //удовлетворяет ли страница общим критериям?
-                    if ((Pages[i] as PageDescriptor).AgeOfPage >= tau  && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Mutex==false)
-                    {
-                        //больше ли самой старой?
-                        if ((Pages[i] as PageDescriptor).AgeOfPage > MaxAge)
-                        {
-                            MaxAge = (Pages[i] as PageDescriptor).AgeOfPage;
-                            AddressMaxPage = i;
-                            IsFinded = true;
-                        }
-                    }
-                }
-                //если нашли, выкидываем, восстанавливаем критерий
-                if (IsFinded == true)
-                {
-                    IsFinded = false;
-                    (Pages[AddressMaxPage] as PageDescriptor).AgeOfPage = 0;
-                    tau += delta;
-                    return AddressMaxPage;
-                }
-                //если не нашли, снижаем tau и повторяем все с самого начала
-                tau--;
-                delta++;
-            }
-        }
-
-        /// <summary>
-        /// Обновляет возраст страниц с каждым тактом
-        /// </summary>
-        /// <returns></returns>
-        public static int AgesUp()
-        {
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
-            {
-                //если занято, возраст = 0
-                if ((Pages[i] as PageDescriptor).Mutex == true  && (Pages[i] as PageDescriptor).Present == true)
-                {
-                    (Pages[i] as PageDescriptor).AgeOfPage = 0;
-                }
-                //иначе если не занято то ++
-                else
-                {
-                    if ((Pages[i] as PageDescriptor).Present == true  && (Pages[i] as PageDescriptor).Mutex == false)
-                    {
-                        (Pages[i] as PageDescriptor).AgeOfPage++;
-                    }
-                }
-            }
-            return 1;
-        }
-#endif
-        #endregion
-
-        #region NFU
-#if NFU
-        /// <summary>
-        /// Поиск замещаемого элемента по алгоритму NFU
-        /// </summary>
-        /// <returns>Абсолютный адрес дескриптора для замещения</returns>
-        private static int ReplacementAlgorithm()
-        {
-            int MinCounter = int.MaxValue;
-            int MinAddress = 0;
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
-            {
-                if ((Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == false && (Pages[i] as PageDescriptor).Mutex == false)
-                {
-                    if ((Pages[i] as PageDescriptor).Counter < MinCounter)
-                    {
-                        MinCounter = (Pages[i] as PageDescriptor).Counter;
-                        MinAddress = i;
-                    }
-                }
-            }
-            (Pages[MinAddress] as PageDescriptor).Counter = 0;
-            return MinAddress;
-        }
-
-        /// <summary>
-        /// Обновляем состояние дескрипторов
-        /// </summary>
-        /// <returns></returns>
-        public static void RefreshDescriptorsState()
-        {
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
-            {
-                //если к страничке обращаются, увеличиваем счетчики сбрасываем access
-                if ((Pages[i] as PageDescriptor).Access == true)
-                {
-                    (Pages[i] as PageDescriptor).Access = false;
-                    (Pages[i] as PageDescriptor).Counter++;
-                }
-            }
-        }
-#endif
-        #endregion
-
-        #region LRU
-#if LRU
-        /// <summary>
-        /// Поиск замещаемого элемента по алгоритму LRU
-        /// </summary>
-        /// <returns>Абсолютный адрес дескриптора для замещения</returns>
-        public static int ReplacementAlgorithm()
-        {
-            int MinCounter = int.MaxValue;
-            int MinAddress = 0;
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
-            {
-                if ((Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == false && (Pages[i] as PageDescriptor).Mutex == false)
-                {
-                    if ((Pages[i] as PageDescriptor).Counter < MinCounter)
-                    {
-                        MinCounter = (Pages[i] as PageDescriptor).Counter;
-                        MinAddress = i;
-                    }
-                }
-            }
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
-            {
-                (Pages[i] as PageDescriptor).Counter = 0;
-            }
-            return MinAddress;
-        }
-
-        /// <summary>
-        /// Обновляем состояние дескрипторов
-        /// </summary>
-        /// <returns></returns>
-        public static void RefreshDescriptorsState()
-        {
-            for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
-            {
-                //если к страничке обращаются, увеличиваем счетчики сбрасываем access
-                if ((Pages[i] as PageDescriptor).Access == true)
-                {
-                    (Pages[i] as PageDescriptor).Access = false;
-                    (Pages[i] as PageDescriptor).Counter++;
-                }
-            }
-        }
-#endif
-        #endregion
-
-        #region FIFO_SC
-#if FIFO_SC
-        /// <summary>
-        /// Поиск замещаемого элемента по алгоритму FIFO_SC
-        /// </summary>
-        /// <returns>Абсолютный адрес дескриптора для замещения</returns>
-        public static int ReplacementAlgorithm()
-        {
-            for (; ; )
-            {
-                if ((FIFOQueue.Peek() as PageDescriptor).Access == true)
-                {
-                    PageDescriptor buf = (FIFOQueue.Dequeue() as PageDescriptor);
-                    buf.Access = false;
-                    FIFOQueue.Enqueue(buf);
-                }
-                else
-                {
-                    return (FIFOQueue.Dequeue() as PageDescriptor).Address;
-                }
-
-            }
-            //for (; ; )
-            //{
-            //    for (int i = CandidatForOverride; i < GlobalConsts.StartAddressAreaOfPages; i++)
-            //    {
-            //        if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == false)
-            //        {
-            //            CandidatForOverride = i;
-            //            return i;
-            //        }
-            //        if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == true)
-            //        {
-            //            (Pages[i] as PageDescriptor).Access = false;
-            //        }
-            //    }
-            //    //если не нашли раньше, будет выполняться этот кусок, который найдет до текущего
-            //    for (int i = GlobalConsts.StartAddressDescriptionPage; i < CandidatForOverride; i++)
-            //    {
-            //        if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == false)
-            //        {
-            //            CandidatForOverride = i;
-            //            return i;
-            //        }
-            //        if ((Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Access == true)
-            //        {
-            //            (Pages[i] as PageDescriptor).Access = false;
-            //        }
-            //    }
-            //}
-            //сюда не должно доходить
-            return -1;
-        }
-
-        
-#endif
-        #endregion
-
-        #region ClockWithOneArrow
-#if ClockWithOneArrow
-        /// <summary>
-        /// Поиск замещаемого элемента по алгоритму ClockWithOneArrow
-        /// </summary>
-        /// <returns></returns>
-        public static int ReplacementAlgorithm()
-        {
-            for (; ; )
-            {
-                //идем от стрелки до конца
-                for (int i = Arrow; i < GlobalConsts.StartAddressAreaOfPages; i++)
-                {
-                    //если страница подходит для замещения - возвращаем адрес
-                    if ((Pages[i] as PageDescriptor).Present == true &&
-                        (Pages[i] as PageDescriptor).Mutex == false &&
-                        (Pages[i] as PageDescriptor).Access == false)
-                    {
-                        Arrow = i;
-                        return i;
-                    }
-                    //если у страницы бит Access=1, скидываем
-                    if ((Pages[i] as PageDescriptor).Present == true &&
-                        (Pages[i] as PageDescriptor).Mutex == false &&
-                        (Pages[i] as PageDescriptor).Access == true)
-                    {
-                        (Pages[i] as PageDescriptor).Access = false;
-                    }
-                }
-                //идем от начала до стрелки
-                for (int i = GlobalConsts.StartAddressDescriptionPage; i < Arrow; i++)
-                {
-                    //если страница подходит для замещения - возвращаем адрес
-                    if ((Pages[i] as PageDescriptor).Present == true &&
-                        (Pages[i] as PageDescriptor).Mutex == false &&
-                        (Pages[i] as PageDescriptor).Access == false)
-                    {
-                        Arrow = i;
-                        return i;
-                    }
-                    //если у страницы бит Access=1, скидываем
-                    if ((Pages[i] as PageDescriptor).Present == true &&
-                        (Pages[i] as PageDescriptor).Mutex == false &&
-                        (Pages[i] as PageDescriptor).Access == true)
-                    {
-                        (Pages[i] as PageDescriptor).Access = false;
-                    }
-                }
-            }
-        }
-#endif
-        #endregion
-
-        #region ClockWithTwoArrows
-#if ClockWithTwoArrows
-        /// <summary>
-        /// Движение стрелки, сбрасывающей бит доступа
-        /// </summary>
-        public static void GoArrow()
-        {
-            if ((Pages[Arrow] as PageDescriptor).Present == true && (Pages[Arrow] as PageDescriptor).Mutex == false && (Pages[Arrow] as PageDescriptor).Access == true)
-                (Pages[Arrow] as PageDescriptor).Access = false;
-            Arrow = Arrow == GlobalConsts.StartAddressAreaOfPages - 1 ? GlobalConsts.StartAddressDescriptionPage : ++Arrow;
-        }
-
-        /// <summary>
-        /// Поиск замещаемого элемента по часовому алгоритму с двумя стрелками
-        /// </summary>
-        /// <returns></returns>
-        public static int ReplacementAlgorithm()
-        {
-            while (true)
-            {
-                //идем от стрелки до конца
-                for (int i = CandidatForOverride; i < GlobalConsts.StartAddressAreaOfPages; i++)
-                {
-                    //если страница подходит для замещения - возвращаем адрес
-                    if ((Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Access == false)
-                    {
-                        CandidatForOverride = i + 1;
-                        return i;
-                    }
-                }
-                //идем от начала до стрелки
-                for (int i = GlobalConsts.StartAddressDescriptionPage; i < CandidatForOverride; i++)
-                {
-                    //если страница подходит для замещения - возвращаем адрес
-                    if ((Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Mutex == false && (Pages[i] as PageDescriptor).Access == false)
-                    {
-                        CandidatForOverride = i + 1;
-                        return i;
-                    }
-                }
-            }
-        }
-#endif
-        #endregion
     }
 }

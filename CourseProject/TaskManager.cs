@@ -28,7 +28,6 @@ namespace OS
             {
                 Processes[i] = new Process() { ID = (i + 1).ToString() };
             }
-            
             // Демо: пусть для 3х процессов А Б В существуют логические пространства А, АБ, В
             Processes[0].LogicAreas = new TableDescriptor[] { Memory.Pages[0] as TableDescriptor, Memory.Pages[1] as TableDescriptor };
             Processes[1].LogicAreas = new TableDescriptor[] { Memory.Pages[1] as TableDescriptor };
@@ -47,11 +46,9 @@ namespace OS
                 Processes[1].Requests[2 * i + 1] = new Request() { Type = RequestTypes.MemoryToHDD, FromTable = 1, FromDescriptor = i, ToFile = "Result.txt", FileBlockNum = i, };
 
                 Processes[2].Requests[i] = new Request() { Type = RequestTypes.HDDToMemory, FromFile = "Result.txt", FileBlockNum = i, ToTable = 2, ToDescriptor = i };
-            }
-#if TM_SRT       
+            }     
             // сортируем процессы по длительности
             SortProcesses();
-#endif
             // задаем первый процесс на выполнение
             Processes[CurrentProcessIndex].State = ProcessState.Active;
         }
@@ -64,18 +61,9 @@ namespace OS
             // если процесса для выполнения нет - выходим
             if (CurrentProcessIndex == -1)
                 return;
-#if (WS || WSClock)
             //Вставка нужна для того, счтобы с каждой заявкой увеличивать системное время
             Memory.AgesUp();
-#endif
-#if (NFU || LRU)
-            //обновляем состояние дескрипторов
-            Memory.RefreshDescriptorsState();
-#endif
-#if ClockWithTwoArrows
-            //двигаем стрелку
-            Memory.GoArrow();
-#endif
+
             // восстановление процесса из контекста
             int CurrentRequest = Processes[CurrentProcessIndex].Context.CurrentRequest;
             int TotalCopied = Processes[CurrentProcessIndex].Context.TotalCopied;
@@ -92,11 +80,9 @@ namespace OS
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
                         Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
                         TotalCopied++;
-#if IO_TWO_BYTES_PER_STEP
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
                         Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
                         TotalCopied++;
-#endif
                     }
                     break;
 
@@ -108,11 +94,9 @@ namespace OS
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
                         HDD.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
                         TotalCopied++;
-#if IO_TWO_BYTES_PER_STEP
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
                         HDD.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
                         TotalCopied++;
-#endif
                     }
                     break;
 
@@ -124,11 +108,9 @@ namespace OS
                         buffer = HDD.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
                         Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
                         TotalCopied++;
-#if IO_TWO_BYTES_PER_STEP
                         buffer = HDD.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
                         Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
                         TotalCopied++;
-#endif
                     }
                     break;
                 case RequestTypes.Action:
@@ -139,11 +121,9 @@ namespace OS
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
                         Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(255 - buffer));
                         TotalCopied++;
-#if IO_TWO_BYTES_PER_STEP
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
                         Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(255 - buffer));
                         TotalCopied++;
-#endif
                     }
                     break;
             }
@@ -171,27 +151,6 @@ namespace OS
                 Processes[CurrentProcessIndex].State = ProcessState.Active;
         }
 
-#if TM_RR
-        /// <summary>
-        /// Поиск нового процесса  RoundRobin
-        /// </summary>
-        /// <returns>Возвращает номер процесса на выполнение. -1 - нет процесса для выполнения</returns>
-        private static int FindNextProcess()
-        {
-            // начинаем с текущего+1 и до последнего
-            for (int i = CurrentProcessIndex+1; i < GlobalConsts.ProcessesCount; i++)
-                if (Processes[i].State != ProcessState.Completed)
-                    return i;
-            // начинаем с 0 до текущего
-            for (int i = 0; i < CurrentProcessIndex + 1; i++)
-                if (Processes[i].State != ProcessState.Completed)
-                    return i;
-            // если все процессы выполнены
-            return -1;
-        }
-#endif
-
-#if TM_SRT
         /// <summary>
         /// Поиск нового процесса SRT
         /// </summary>
@@ -229,6 +188,5 @@ namespace OS
                 }
             }
         }
-#endif
     }
 }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-// Файл содержит все мелкие нестатические классы, "кирпичики"
-
 namespace OS
 {
     #region Процессы
@@ -70,7 +68,7 @@ namespace OS
         /// </summary>
         public RequestTypes Type;
 
-        // Всевозможные адресные параметры (???)
+        // Всевозможные адресные параметры 
         public string FromFile;
         public string ToFile;
         public int FileBlockNum;
@@ -191,32 +189,21 @@ namespace OS
         /// </summary>
         public bool Mutex;
 
-#if (WSClock || NFU ||FIFO_SC || LRU || ClockWithOneArrow || ClockWithTwoArrows)
-
         /// <summary>
         /// Бит доступа (Для алгоритмов замещения)
         /// </summary>
         public bool Access;
-#endif
 
-#if NFU||LRU
-        /// <summary>
-        /// Счетчик
-        /// </summary>
-        public int Counter;
-#endif
 
         /// <summary>
         /// Абсолютный адрес в адресном пространстве 
         /// </summary>
         public int Address;
 
-#if (WS || WSClock)
         /// <summary>
         /// Возраст страницы
         /// </summary>
         public int AgeOfPage;
-#endif
     }
 
     /// <summary>
@@ -244,71 +231,6 @@ namespace OS
 
     #region ВЗУ
 
-    #region Перечисление
-#if FS_WITH_INDEX_ENUM
-    /// <summary>
-    /// Описание одного пункта из этой таблицы. ФС - перечисление.
-    /// </summary>
-    public class CatalogRecord
-    {
-        /// <summary>
-        /// Адрес записи каталога
-        /// </summary>
-        public int Address;
-
-        /// <summary>
-        /// Имя файла
-        /// </summary>
-        public string Filename;
-
-        /// <summary>
-        /// открыт ли?
-        /// </summary>
-        public bool IsOpen;
-
-        /// <summary>
-        /// Индекы, занятые файлом
-        /// </summary>
-        public List<int> Indexes = new List<int>();
-
-        /// <summary>
-        ///  Размер файла
-        /// </summary>
-        public int FileSize;
-
-        public override string ToString()
-        {
-            return Filename;
-        }
-    }
-
-    /// <summary>
-    /// Ячейка памяти ВЗУ файловая система которй -
-    /// перечисление
-    /// </summary>
-    public class HDDCell
-    {
-        /// <summary>
-        /// Данные в ячейке
-        /// </summary>
-        public byte[] Data;
-
-        /// <summary>
-        /// Адрес ячейки
-        /// </summary>
-        public int Address;
-
-        /// <summary>
-        /// Свободно ли?
-        /// </summary>
-        public bool IsFree;
-    }
-
-#endif
-    #endregion
-
-    #region Для связанной последованости
-#if FS_WITH_INDEX_SEQ
     /// <summary>
     /// Описание одного пункта из этой таблицы. ФС - связанная последовательность.
     /// </summary>
@@ -371,10 +293,5 @@ namespace OS
         /// </summary>
         public int Next;
     }
-
-
-#endif
-    #endregion
-
     #endregion
 }
