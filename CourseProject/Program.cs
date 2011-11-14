@@ -1,30 +1,4 @@
-﻿/*****Все символы прекомпиляции*****
- ******************************* 
- + #define FS_WITH_INDEX_ENUM
- + #define FS_WITH_INDEX_SEQ
- ******************************* 
- + #define TM_RR
- + #define TM_SRT
- ******************************* 
- + #define IO_TWO_BYTES_PER_STEP
- ******************************* 
- + #define FIFO
- + #define WSClock
- + #define WS
- + #define NFU
- + #define FIFO_SC
- + #define LRU
- + #define ClockWithOneArrow
- + #define ClockWithTwoArrows
- ******************************* 
- + UI_REQUEST_EDITOR_ON_MAIN_FORM
- + UI_REQUEST_EDITOR_ON_EDITOR_FORM
- */
-
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Windows.Forms;
 
 namespace OS
