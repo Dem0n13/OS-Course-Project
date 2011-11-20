@@ -228,9 +228,9 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(143, 10);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(166, 24);
+            this.label1.Size = new System.Drawing.Size(274, 24);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Диспетчер задач";
+            this.label1.Text = "Диспетчеризация процессов";
             // 
             // label2
             // 
@@ -238,9 +238,9 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label2.Location = new System.Drawing.Point(15, 292);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(187, 24);
+            this.label2.Size = new System.Drawing.Size(200, 24);
             this.label2.TabIndex = 7;
-            this.label2.Text = "Дескриптор таблиц";
+            this.label2.Text = "Дескрипторы таблиц";
             // 
             // label3
             // 
@@ -248,9 +248,9 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label3.Location = new System.Drawing.Point(208, 292);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(198, 24);
+            this.label3.Size = new System.Drawing.Size(211, 24);
             this.label3.TabIndex = 8;
-            this.label3.Text = "Дескриптор страниц";
+            this.label3.Text = "Дескрипторы страниц";
             // 
             // label4
             // 
@@ -286,7 +286,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label7.Location = new System.Drawing.Point(331, 10);
+            this.label7.Location = new System.Drawing.Point(423, 10);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(53, 20);
             this.label7.TabIndex = 12;
@@ -314,7 +314,7 @@
             this.Controls.Add(this.CellsArray);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Курсовой проект ОС";
+            this.Text = "Курсовой проект";
             ((System.ComponentModel.ISupportInitialize)(this.DGRequsts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PagesInMemory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionPages)).EndInit();
