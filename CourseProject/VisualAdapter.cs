@@ -293,13 +293,13 @@ namespace OS
 
                     // раскрашиваем v3
                     if ((j < TaskManager.Processes[i].Context.CurrentRequest) || (TaskManager.Processes[i].State == ProcessState.Completed))
-                        DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;
+                        DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.Orange;
                     else if (j == TaskManager.Processes[i].Context.CurrentRequest)
                     {
-                        //if (TaskManager.Processes[i].State == ProcessState.Active)
-                        //    DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightGreen;
-                        //if (TaskManager.Processes[i].State == ProcessState.Paused)
-                        //    DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.SandyBrown;
+                        if (TaskManager.Processes[i].State == ProcessState.Active)
+                            DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightGreen;
+                        if (TaskManager.Processes[i].State == ProcessState.Paused)
+                            DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.White;
                     }
                 }
             }
