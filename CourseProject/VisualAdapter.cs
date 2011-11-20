@@ -340,7 +340,7 @@ namespace OS
             }
 #endif
             //dfhsbf
-            StepButton.Text = "Следующий процесс: " + TaskManager.Processes[TaskManager.CurrentProcessIndex].ID;
+            StepButton.Text = "Следующий процесс: " + (TaskManager.CurrentProcessIndex == -1 ? "Нет" : TaskManager.Processes[TaskManager.CurrentProcessIndex].ID);
         }
 
 #if UI_REQUEST_EDITOR_ON_MAIN_FORM

@@ -75,7 +75,7 @@
             this.DGRequsts.ReadOnly = true;
             this.DGRequsts.RowHeadersVisible = false;
             this.DGRequsts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DGRequsts.Size = new System.Drawing.Size(361, 246);
+            this.DGRequsts.Size = new System.Drawing.Size(453, 246);
             this.DGRequsts.TabIndex = 5;
             this.DGRequsts.SelectionChanged += new System.EventHandler(this.DGRequsts_SelectionChanged);
             // 
@@ -115,10 +115,10 @@
             this.Column11,
             this.Column12});
             this.PagesInMemory.GridColor = System.Drawing.Color.DimGray;
-            this.PagesInMemory.Location = new System.Drawing.Point(582, 40);
+            this.PagesInMemory.Location = new System.Drawing.Point(474, 306);
             this.PagesInMemory.Name = "PagesInMemory";
             this.PagesInMemory.RowHeadersVisible = false;
-            this.PagesInMemory.Size = new System.Drawing.Size(219, 220);
+            this.PagesInMemory.Size = new System.Drawing.Size(324, 243);
             this.PagesInMemory.TabIndex = 2;
             // 
             // Column8
@@ -163,12 +163,12 @@
             this.DescriptionPages.AllowUserToResizeRows = false;
             this.DescriptionPages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DescriptionPages.GridColor = System.Drawing.Color.DimGray;
-            this.DescriptionPages.Location = new System.Drawing.Point(211, 40);
+            this.DescriptionPages.Location = new System.Drawing.Point(281, 40);
             this.DescriptionPages.MultiSelect = false;
             this.DescriptionPages.Name = "DescriptionPages";
             this.DescriptionPages.RowHeadersVisible = false;
             this.DescriptionPages.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.White;
-            this.DescriptionPages.Size = new System.Drawing.Size(365, 220);
+            this.DescriptionPages.Size = new System.Drawing.Size(517, 220);
             this.DescriptionPages.TabIndex = 1;
             // 
             // DescriptionTable
@@ -182,23 +182,23 @@
             this.DescriptionTable.Location = new System.Drawing.Point(13, 40);
             this.DescriptionTable.Name = "DescriptionTable";
             this.DescriptionTable.RowHeadersVisible = false;
-            this.DescriptionTable.Size = new System.Drawing.Size(188, 220);
+            this.DescriptionTable.Size = new System.Drawing.Size(262, 220);
             this.DescriptionTable.TabIndex = 0;
             // 
             // Catalog
             // 
             this.Catalog.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.Catalog.Location = new System.Drawing.Point(393, 306);
+            this.Catalog.Location = new System.Drawing.Point(809, 42);
             this.Catalog.Name = "Catalog";
-            this.Catalog.Size = new System.Drawing.Size(405, 246);
+            this.Catalog.Size = new System.Drawing.Size(282, 222);
             this.Catalog.TabIndex = 0;
             // 
             // CellsArray
             // 
             this.CellsArray.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.CellsArray.Location = new System.Drawing.Point(809, 40);
+            this.CellsArray.Location = new System.Drawing.Point(809, 306);
             this.CellsArray.Name = "CellsArray";
-            this.CellsArray.Size = new System.Drawing.Size(282, 540);
+            this.CellsArray.Size = new System.Drawing.Size(282, 274);
             this.CellsArray.TabIndex = 4;
             // 
             // RunStepBtn
@@ -229,7 +229,7 @@
             this.label1.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(22, 275);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(165, 26);
+            this.label1.Size = new System.Drawing.Size(276, 26);
             this.label1.TabIndex = 6;
             this.label1.Text = "Диспетчеризация процессов";
             // 
@@ -239,7 +239,7 @@
             this.label2.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(11, 13);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(191, 26);
+            this.label2.Size = new System.Drawing.Size(206, 26);
             this.label2.TabIndex = 7;
             this.label2.Text = "Дескрипторы таблиц";
             // 
@@ -247,9 +247,9 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(207, 13);
+            this.label3.Location = new System.Drawing.Point(276, 9);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(200, 26);
+            this.label3.Size = new System.Drawing.Size(215, 26);
             this.label3.TabIndex = 8;
             this.label3.Text = "Дескрипторы страниц";
             // 
@@ -257,7 +257,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(578, 13);
+            this.label4.Location = new System.Drawing.Point(474, 277);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(102, 26);
             this.label4.TabIndex = 9;
@@ -267,7 +267,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(389, 275);
+            this.label5.Location = new System.Drawing.Point(813, 13);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(85, 26);
             this.label5.TabIndex = 10;
@@ -277,7 +277,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label6.Location = new System.Drawing.Point(805, 13);
+            this.label6.Location = new System.Drawing.Point(813, 275);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(47, 26);
             this.label6.TabIndex = 11;
