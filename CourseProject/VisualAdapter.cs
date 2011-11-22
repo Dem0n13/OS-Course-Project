@@ -53,7 +53,7 @@ namespace OS
             {
                 //расставляем адреса в первой и третьей колонке колонке
                 DGDescriptionTable.Rows[i].Cells[0].Value = Memory.TableDess[i].Address;
-                DGDescriptionTable.Rows[i].Cells[2].Value = Memory.TableDess[i].TargetAddress.ToString();
+                DGDescriptionTable.Rows[i].Cells[2].Value = (Memory.TableDess[i].TargetAddress + GlobalConsts.CountOfGroup).ToString();
 
                 // расскрашиваем группы
                 //DGDescriptionTable.Rows[i].Cells[1].Style.BackColor = System.Drawing.Color.FromArgb(Program.RND.Next(100, 255), Program.RND.Next(100, 255), Program.RND.Next(100, 255));
@@ -460,7 +460,7 @@ namespace OS
                 DGDescriptionPages.Rows[i].Cells[2].Value = Memory.PageDess[i].Mutex;
                 //DGDescriptionPages[2, i].Style.BackColor = Memory.PageDess[i].Mutex == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
                 DGDescriptionPages.Rows[i].Cells[3].Value = Memory.PageDess[i].AddressInSwap;
-                DGDescriptionPages.Rows[i].Cells[4].Value = Memory.PageDess[i].TargetAddress;
+                DGDescriptionPages.Rows[i].Cells[4].Value = Memory.PageDess[i].TargetAddress == -1 ? "-1" : (Memory.PageDess[i].TargetAddress + GlobalConsts.StartAddressAreaOfPages).ToString();
 #if (WS || WSClock)
                 DGDescriptionPages.Rows[i].Cells[5].Value = Memory.PageDess[i].AgeOfPage;
 #endif
