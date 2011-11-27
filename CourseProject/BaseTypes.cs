@@ -12,7 +12,7 @@ namespace OS
     /// <summary>
     /// Процесс
     /// </summary>
-    public class Process
+    public class Proc
     {
         /// <summary>
         /// Имя процесса
@@ -22,24 +22,24 @@ namespace OS
         /// <summary>
         /// Статус процесса
         /// </summary>
-        public ProcessState State = ProcessState.NotProcessed;
+        public Sostoyania Sostoyania = Sostoyania.NeZapuskalsa;
 
         /// <summary>
         /// Массив заявок
         /// </summary>
-        public Request[] Requests;
+        public Zayavka[] Zayavki;
 
         /// <summary>
         /// Логические пространства процесса
         /// </summary>
-        public TableDescriptor[] LogicAreas;
+        public TablicaDes[] AdresnieProstranstva;
 
         /// <summary>
         /// Контекст процесса для реализации псевдопараллельной работы
         /// </summary>
-        public ProcessContext Context = new ProcessContext()
+        public Kontext Context = new Kontext()
         {
-            CurrentRequest = 0,
+            Tekushaa = 0,
             TotalCopied = 0
         };
     }
@@ -47,12 +47,12 @@ namespace OS
     /// <summary>
     /// Контекст процесса
     /// </summary>
-    public struct ProcessContext
+    public struct Kontext
     {
         /// <summary>
         /// Номер текущей заявки процесса
         /// </summary>
-        public int CurrentRequest;
+        public int Tekushaa;
 
         /// <summary>
         /// Прогресс выполнения текущей заявки
@@ -63,39 +63,39 @@ namespace OS
     /// <summary>
     /// Заявка
     /// </summary>
-    public class Request
+    public class Zayavka
     {
         /// <summary>
         /// Тип заявки
         /// </summary>
-        public RequestTypes Type;
+        public RequestTypes Type_zayavky;
 
         // Всевозможные адресные параметры (???)
-        public string FromFile;
-        public string ToFile;
-        public int FileBlockNum;
+        public string IzFile;
+        public string VFile;
+        public int NomerFB;
 
-        public int FromTable;
-        public int ToTable;
-        public int FromDescriptor;
-        public int ToDescriptor;
+        public int IzTablici;
+        public int VTablicu;
+        public int IzDes;
+        public int VDes;
 
         public override string ToString()
         {
             string result = "";
-            switch (Type)
+            switch (Type_zayavky)
             {
-                case RequestTypes.MemoryToMemory:
-                    result = String.Format("Память {0}_{1} -> Память {2}_{3}", FromTable, FromDescriptor, ToTable, ToDescriptor);
+                case RequestTypes.Copy:
+                    result = String.Format("Память {0}_{1} -> Память {2}_{3}", IzTablici, IzDes, VTablicu, VDes);
                     break;
-                case RequestTypes.MemoryToHDD:
-                    result = String.Format("Память {0}_{1} ->{2}, {3}", FromTable, FromDescriptor, ToFile, FileBlockNum);
+                case RequestTypes.IzMemory:
+                    result = String.Format("Память {0}_{1} ->{2}, {3}", IzTablici, IzDes, VFile, NomerFB);
                     break;
-                case RequestTypes.HDDToMemory:
-                    result = String.Format("{0}, {1} -> Память {2}_{3}", FromFile, FileBlockNum, ToTable, ToDescriptor);
+                case RequestTypes.VMemory:
+                    result = String.Format("{0}, {1} -> Память {2}_{3}", IzFile, NomerFB, VTablicu, VDes);
                     break;
-                case RequestTypes.Action:
-                    result = String.Format("Обработка +6 в памяти {0}_{1}", FromTable, FromDescriptor);
+                case RequestTypes.Deistvie:
+                    result = String.Format("Обработка +6 в памяти {0}_{1}", IzTablici, IzDes);
                     break;
             }
             return result;
@@ -107,33 +107,33 @@ namespace OS
     /// </summary>
     public enum RequestTypes
     {
-        MemoryToMemory,
-        MemoryToHDD,
-        HDDToMemory,
-        Action
+        Copy,
+        IzMemory,
+        VMemory,
+        Deistvie
     }
 
     /// <summary>
     /// Возможные состояния заявок
     /// </summary>
-    public enum ProcessState
+    public enum Sostoyania
     {
         /// <summary>
         /// Не обработана
         /// </summary>
-        NotProcessed,
+        NeZapuskalsa,
         /// <summary>
         /// Обрабатывается
         /// </summary>
-        Active,
+        Vipolnyaetsa,
         /// <summary>
         /// Приостановлена
         /// </summary>
-        Paused,
+        Zhdet,
         /// <summary>
         /// Выполнена
         /// </summary>
-        Completed
+        Vipolnen
     }
 
     #endregion
@@ -143,17 +143,17 @@ namespace OS
     /// <summary>
     /// Интерфейс, описывает все, что может содержать страница основной памяти
     /// </summary>
-    public interface IMemoryPage {}
+    public interface YacheykaPamyati {}
 
     /// <summary>
     /// Дескриптор таблицы
     /// </summary>
-    public class TableDescriptor : IMemoryPage
+    public class TablicaDes : YacheykaPamyati
     {
         /// <summary>
         /// Адрес таблицы дескрипторов в памяти 
         /// </summary>
-        public int TargetAddress;
+        public int Ssilka;
 
         /// <summary>
         /// Размер группы
@@ -169,34 +169,34 @@ namespace OS
     /// <summary>
     /// Дескриптор страницы
     /// </summary>
-    public class PageDescriptor : IMemoryPage
+    public class Des : YacheykaPamyati
     {
         /// <summary>
         /// Адрес страницы
         /// </summary>
-        public int TargetAddress;
+        public int Ssilka;
 
         /// <summary>
         /// Бит присутствия в памяти. 0-нет 1-есть
         /// </summary>
-        public bool Present;
+        public bool P;
 
         /// <summary>
         /// Адрес страницы в файле подкачки
         /// </summary>
-        public int AddressInSwap;
+        public int SsailkaHDD;
 
         /// <summary>
         /// Бит доступа (Для процессов)
         /// </summary>
-        public bool Mutex;
+        public bool M;
 
 #if (WSClock || NFU ||FIFO_SC || LRU || ClockWithOneArrow || ClockWithTwoArrows)
 
         /// <summary>
         /// Бит доступа (Для алгоритмов замещения)
         /// </summary>
-        public bool Access;
+        public bool A;
 #endif
 
 #if NFU||LRU
@@ -222,7 +222,7 @@ namespace OS
     /// <summary>
     /// Сама страница с данными
     /// </summary>
-    public class Page : IMemoryPage
+    public class Str : YacheykaPamyati
     {
         /// <summary>
         /// Массив байтов страницы
@@ -232,7 +232,7 @@ namespace OS
         /// <summary>
         /// Признак заполненности страницы
         /// </summary>
-        public bool Dirty = false;
+        public bool Zanyata = false;
 
         /// <summary>
         /// Абсолютный адрес в адресном пространстве 
@@ -312,7 +312,7 @@ namespace OS
     /// <summary>
     /// Описание одного пункта из этой таблицы. ФС - связанная последовательность.
     /// </summary>
-    public class CatalogRecord
+    public class ZapisVCataloge
     {
         /// <summary>
         /// Адрес записи каталога
@@ -322,12 +322,12 @@ namespace OS
         /// <summary>
         /// Имя файла
         /// </summary>
-        public string Filename;
+        public string Imya;
 
         /// <summary>
         /// открыт ли?
         /// </summary>
-        public bool IsOpen;
+        public bool Otkrit;
 
         /// <summary>
         /// Начальный индекс, занятые файлом
@@ -341,7 +341,7 @@ namespace OS
 
         public override string ToString()
         {
-            return Filename;
+            return Imya;
         }
     }
 
@@ -349,7 +349,7 @@ namespace OS
     /// Ячейка памяти ВЗУ файловая система которй -
     /// связанная последовательность
     /// </summary>
-    public class HDDCell
+    public class Yacheyka
     {
         /// <summary>
         /// Данные в ячейке
@@ -364,7 +364,7 @@ namespace OS
         /// <summary>
         /// Свободно ли?
         /// </summary>
-        public bool IsFree;
+        public bool Svobodna;
 
         /// <summary>
         /// Адрес следующей ячейки

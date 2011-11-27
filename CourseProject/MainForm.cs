@@ -105,7 +105,7 @@ namespace OS
 
         private void RunStepBtn_Click(object sender, EventArgs e)
         {
-            TaskManager.ResumeProcess();
+            DispetcherProcessov.Go();
             VisualAdapter.RefreshRequests();
             VisualAdapter.RefreshMemoryState();
             VisualAdapter.RefreshHDDState();
@@ -120,7 +120,7 @@ namespace OS
             int k = 0;
             for (i_process = 0; i_process < GlobalConsts.ProcessesCount; i_process++)
             {
-                for (i_request = 0; i_request < TaskManager.Processes[i_process].Requests.Length; i_request++)
+                for (i_request = 0; i_request < DispetcherProcessov.Processes[i_process].Zayavki.Length; i_request++)
                 {
                     if (k == DGRequsts.SelectedRows[0].Index)
                     {

@@ -13,7 +13,7 @@ namespace OS
     {
         int i_process;
         int i_request;
-        Request request;
+        Zayavka request;
 
         public RequestEditor(int i_process, int i_request)
         {
@@ -21,41 +21,41 @@ namespace OS
             // получение запроса
             this.i_process = i_process;
             this.i_request = i_request;
-            request = TaskManager.Processes[i_process].Requests[i_request];
+            request = DispetcherProcessov.Processes[i_process].Zayavki[i_request];
 
             // диапазоны значений таблиц дескрипторов
-            SUpDn1.Minimum = Array.IndexOf(Memory.Pages, TaskManager.Processes[i_process].LogicAreas[0]);
-            SUpDn1.Maximum = Array.IndexOf(Memory.Pages, TaskManager.Processes[i_process].LogicAreas[TaskManager.Processes[i_process].LogicAreas.Length - 1]);
-            DUpDn1.Minimum = Array.IndexOf(Memory.Pages, TaskManager.Processes[i_process].LogicAreas[0]);
-            DUpDn1.Maximum = Array.IndexOf(Memory.Pages, TaskManager.Processes[i_process].LogicAreas[TaskManager.Processes[i_process].LogicAreas.Length - 1]);
+            SUpDn1.Minimum = Array.IndexOf(Memory.Stranici, DispetcherProcessov.Processes[i_process].AdresnieProstranstva[0]);
+            SUpDn1.Maximum = Array.IndexOf(Memory.Stranici, DispetcherProcessov.Processes[i_process].AdresnieProstranstva[DispetcherProcessov.Processes[i_process].AdresnieProstranstva.Length - 1]);
+            DUpDn1.Minimum = Array.IndexOf(Memory.Stranici, DispetcherProcessov.Processes[i_process].AdresnieProstranstva[0]);
+            DUpDn1.Maximum = Array.IndexOf(Memory.Stranici, DispetcherProcessov.Processes[i_process].AdresnieProstranstva[DispetcherProcessov.Processes[i_process].AdresnieProstranstva.Length - 1]);
 
             // заполнение начальных данных с редактируемой заявки
-            RequestTypeBox.SelectedIndex = (int)request.Type;
-            SBox.Items.AddRange(HDD.Catalog.ToArray<CatalogRecord>()); SBox.SelectedIndex = 0;
-            DBox.Items.AddRange(HDD.Catalog.ToArray<CatalogRecord>()); DBox.SelectedIndex = 0;
-            switch (request.Type)
+            RequestTypeBox.SelectedIndex = (int)request.Type_zayavky;
+            SBox.Items.AddRange(HDD.Catalog.ToArray<ZapisVCataloge>()); SBox.SelectedIndex = 0;
+            DBox.Items.AddRange(HDD.Catalog.ToArray<ZapisVCataloge>()); DBox.SelectedIndex = 0;
+            switch (request.Type_zayavky)
             {
-                case RequestTypes.MemoryToMemory:
-                    SUpDn1.Value = request.FromTable;
-                    SUpDn2.Value = request.FromDescriptor;
-                    DUpDn1.Value = request.ToTable;
-                    DUpDn2.Value = request.ToDescriptor;
+                case RequestTypes.Copy:
+                    SUpDn1.Value = request.IzTablici;
+                    SUpDn2.Value = request.IzDes;
+                    DUpDn1.Value = request.VTablicu;
+                    DUpDn2.Value = request.VDes;
                     break;
-                case RequestTypes.MemoryToHDD:
-                    SUpDn1.Value = request.FromTable;
-                    SUpDn2.Value = request.FromDescriptor;
-                    DBox.Text = request.ToFile;
-                    DUpDn2.Value = request.FileBlockNum;
+                case RequestTypes.IzMemory:
+                    SUpDn1.Value = request.IzTablici;
+                    SUpDn2.Value = request.IzDes;
+                    DBox.Text = request.VFile;
+                    DUpDn2.Value = request.NomerFB;
                     break;
-                case RequestTypes.HDDToMemory:
-                    SBox.Text = request.FromFile;
-                    SUpDn2.Value = request.FileBlockNum;
-                    DUpDn1.Value = request.ToTable;
-                    DUpDn2.Value = request.ToDescriptor;
+                case RequestTypes.VMemory:
+                    SBox.Text = request.IzFile;
+                    SUpDn2.Value = request.NomerFB;
+                    DUpDn1.Value = request.VTablicu;
+                    DUpDn2.Value = request.VDes;
                     break;
-                case RequestTypes.Action:
-                    SUpDn1.Value = request.FromTable;
-                    SUpDn2.Value = request.FromDescriptor;
+                case RequestTypes.Deistvie:
+                    SUpDn1.Value = request.IzTablici;
+                    SUpDn2.Value = request.IzDes;
                     break;
             }
 
@@ -67,7 +67,7 @@ namespace OS
         {
             switch ((RequestTypes)RequestTypeBox.SelectedIndex)
             {
-                case RequestTypes.MemoryToMemory:
+                case RequestTypes.Copy:
                     // видимость форм
                     SBox.Visible = DBox.Visible = false;
                     SUpDn1.Visible = DUpDn1.Visible = DUpDn2.Visible = true;
@@ -79,7 +79,7 @@ namespace OS
                     DUpDn2.Maximum = GlobalConsts.SizesOfGroup[(int)DUpDn1.Value] - 1;
                     break;
 
-                case RequestTypes.MemoryToHDD:
+                case RequestTypes.IzMemory:
                     // видимость форм
                     SBox.Visible = DUpDn1.Visible = false;
                     SUpDn1.Visible = DBox.Visible = DUpDn2.Visible = true;
@@ -93,7 +93,7 @@ namespace OS
                     DUpDn2.Maximum = GlobalConsts.HDDCellsCount;
                     break;
 
-                case RequestTypes.HDDToMemory:
+                case RequestTypes.VMemory:
                     // видимость форм
                     SUpDn1.Visible = DBox.Visible = false;
                     SBox.Visible = DUpDn1.Visible = DUpDn2.Visible = true;
@@ -106,7 +106,7 @@ namespace OS
                     SUpDn2.Maximum = GlobalConsts.HDDCellsCount;
                     DUpDn2.Maximum = GlobalConsts.SizesOfGroup[(int)DUpDn1.Value] - 1;
                     break;
-                case RequestTypes.Action:
+                case RequestTypes.Deistvie:
                     // видимость форм
                     SBox.Visible = DUpDn1.Visible = DBox.Visible = DUpDn2.Visible = false;
                     SUpDn1.Visible = true;
@@ -127,32 +127,32 @@ namespace OS
         private void SaveBtn_Click(object sender, EventArgs e)
         {
             // запись измененной заявки
-            request.Type = (RequestTypes)RequestTypeBox.SelectedIndex;
-            switch (request.Type)
+            request.Type_zayavky = (RequestTypes)RequestTypeBox.SelectedIndex;
+            switch (request.Type_zayavky)
             {
-                case RequestTypes.MemoryToMemory:
-                    request.FromTable = (int)SUpDn1.Value;
-                    request.FromDescriptor = (int)SUpDn2.Value;
-                    request.ToTable = (int)DUpDn1.Value;
-                    request.ToDescriptor = (int)DUpDn2.Value;
+                case RequestTypes.Copy:
+                    request.IzTablici = (int)SUpDn1.Value;
+                    request.IzDes = (int)SUpDn2.Value;
+                    request.VTablicu = (int)DUpDn1.Value;
+                    request.VDes = (int)DUpDn2.Value;
                     break;
 
-                case RequestTypes.MemoryToHDD:
-                    request.FromTable = (int)SUpDn1.Value;
-                    request.FromDescriptor = (int)SUpDn2.Value;
-                    request.ToFile = DBox.Text;
-                    request.FileBlockNum = (int)DUpDn2.Value;
+                case RequestTypes.IzMemory:
+                    request.IzTablici = (int)SUpDn1.Value;
+                    request.IzDes = (int)SUpDn2.Value;
+                    request.VFile = DBox.Text;
+                    request.NomerFB = (int)DUpDn2.Value;
                     break;
 
-                case RequestTypes.HDDToMemory:
-                    request.FromFile = SBox.Text;
-                    request.FileBlockNum = (int)SUpDn2.Value;
-                    request.ToTable = (int)DUpDn1.Value;
-                    request.ToDescriptor = (int)DUpDn2.Value;
+                case RequestTypes.VMemory:
+                    request.IzFile = SBox.Text;
+                    request.NomerFB = (int)SUpDn2.Value;
+                    request.VTablicu = (int)DUpDn1.Value;
+                    request.VDes = (int)DUpDn2.Value;
                     break;
-                case RequestTypes.Action:
-                    request.FromTable = (int)SUpDn1.Value;
-                    request.FromDescriptor = (int)SUpDn2.Value;
+                case RequestTypes.Deistvie:
+                    request.IzTablici = (int)SUpDn1.Value;
+                    request.IzDes = (int)SUpDn2.Value;
                     break;
             }
         }

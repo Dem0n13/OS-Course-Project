@@ -8,63 +8,63 @@ namespace OS
     /// <summary>
     /// Диспетчер процессов
     /// </summary>
-    public static class TaskManager
+    public static class DispetcherProcessov
     {
-        public static int CurrentProcessIndex = 0;
+        public static int Tekushiy = 0;
         
         /// <summary>
         /// Массив процессов
         /// </summary>
-        public static Process[] Processes;
+        public static Proc[] Processes;
 
         /// <summary>
         /// Инициализация начальных переменных
         /// </summary>
-        static TaskManager()
+        static DispetcherProcessov()
         {
             // создаем список процессов и их ID
-            Processes = new Process[GlobalConsts.ProcessesCount];
+            Processes = new Proc[GlobalConsts.ProcessesCount];
             for (int i = 0; i < GlobalConsts.ProcessesCount; i++)
             {
-                Processes[i] = new Process();
+                Processes[i] = new Proc();
             }
             
             // Демо: пусть для 3х процессов А Б В существуют логические пространства А, АБ, В
             Processes[0].ID = "A";
-            Processes[0].LogicAreas = new TableDescriptor[] { Memory.Pages[0] as TableDescriptor, Memory.Pages[1] as TableDescriptor };
+            Processes[0].AdresnieProstranstva = new TablicaDes[] { Memory.Stranici[0] as TablicaDes, Memory.Stranici[1] as TablicaDes };
             Processes[1].ID = "Б";
-            Processes[1].LogicAreas = new TableDescriptor[] { Memory.Pages[1] as TableDescriptor };
+            Processes[1].AdresnieProstranstva = new TablicaDes[] { Memory.Stranici[1] as TablicaDes };
             Processes[2].ID = "В";
-            Processes[2].LogicAreas = new TableDescriptor[] { Memory.Pages[2] as TableDescriptor };
+            Processes[2].AdresnieProstranstva = new TablicaDes[] { Memory.Stranici[2] as TablicaDes };
             
             // пусть для каждого процесса существуют следующие заявки
-            Processes[0].Requests = new Request[GlobalConsts.SizesOfGroup[0]];
-            Processes[1].Requests = new Request[GlobalConsts.SizesOfGroup[0] * 2];
-            Processes[2].Requests = new Request[GlobalConsts.SizesOfGroup[0]];
+            Processes[0].Zayavki = new Zayavka[GlobalConsts.SizesOfGroup[0]];
+            Processes[1].Zayavki = new Zayavka[GlobalConsts.SizesOfGroup[0] * 2];
+            Processes[2].Zayavki = new Zayavka[GlobalConsts.SizesOfGroup[0]];
             for (int i = 0; i < GlobalConsts.SizesOfGroup[0]; i++)
             {
-                Processes[0].Requests[i] = new Request() { Type = RequestTypes.MemoryToMemory, FromTable = 0, FromDescriptor = i, ToTable = 1, ToDescriptor = i };
+                Processes[0].Zayavki[i] = new Zayavka() { Type_zayavky = RequestTypes.Copy, IzTablici = 0, IzDes = i, VTablicu = 1, VDes = i };
 
-                Processes[1].Requests[2 * i] = new Request() { Type = RequestTypes.Action, FromTable = 1, FromDescriptor = i };
-                Processes[1].Requests[2 * i + 1] = new Request() { Type = RequestTypes.MemoryToHDD, FromTable = 1, FromDescriptor = i, ToFile = "File2", FileBlockNum = i, };
+                Processes[1].Zayavki[2 * i] = new Zayavka() { Type_zayavky = RequestTypes.Deistvie, IzTablici = 1, IzDes = i };
+                Processes[1].Zayavki[2 * i + 1] = new Zayavka() { Type_zayavky = RequestTypes.IzMemory, IzTablici = 1, IzDes = i, VFile = "File2", NomerFB = i, };
 
-                Processes[2].Requests[i] = new Request() { Type = RequestTypes.HDDToMemory, FromFile = "File2", FileBlockNum = i, ToTable = 2, ToDescriptor = i };
+                Processes[2].Zayavki[i] = new Zayavka() { Type_zayavky = RequestTypes.VMemory, IzFile = "File2", NomerFB = i, VTablicu = 2, VDes = i };
             }
 #if TM_SRT       
             // сортируем процессы по длительности
             SortProcesses();
 #endif
             // задаем первый процесс на выполнение
-            Processes[CurrentProcessIndex].State = ProcessState.Active;
+            Processes[Tekushiy].Sostoyania = Sostoyania.Vipolnyaetsa;
         }
 
         /// <summary>
         /// Выполнение следующей заявки текущего процесса
         /// </summary>
-        public static void ResumeProcess()
+        public static void Go()
         {
             // если процесса для выполнения нет - выходим
-            if (CurrentProcessIndex == -1)
+            if (Tekushiy == -1)
                 return;
 #if (WS || WSClock)
             //Вставка нужна для того, счтобы с каждой заявкой увеличивать системное время
@@ -79,71 +79,71 @@ namespace OS
             Memory.GoArrow();
 #endif
             // восстановление процесса из контекста
-            int CurrentRequest = Processes[CurrentProcessIndex].Context.CurrentRequest;
-            int TotalCopied = Processes[CurrentProcessIndex].Context.TotalCopied;
+            int CurrentRequest = Processes[Tekushiy].Context.Tekushaa;
+            int TotalCopied = Processes[Tekushiy].Context.TotalCopied;
 
             byte buffer = 0;
             // выполнение текущей заявки
-            switch (Processes[CurrentProcessIndex].Requests[CurrentRequest].Type)
+            switch (Processes[Tekushiy].Zayavki[CurrentRequest].Type_zayavky)
             {
-                case RequestTypes.MemoryToMemory:
+                case RequestTypes.Copy:
                     // если есть доступ к источнику и приемнику
-                    if (Memory.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, false) && Memory.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, true))
+                    if (Memory.UstanovlenMutex(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, false) && Memory.UstanovlenMutex(Processes[Tekushiy].Zayavki[CurrentRequest].VTablicu, Processes[Tekushiy].Zayavki[CurrentRequest].VDes, TotalCopied, true))
                     {
                         // считываем и записываем
-                        buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
+                        buffer = Memory.Chtenie(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, buffer);
+                        Memory.Zapis(Processes[Tekushiy].Zayavki[CurrentRequest].VTablicu, Processes[Tekushiy].Zayavki[CurrentRequest].VDes, TotalCopied, buffer);
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
-                        buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
+                        buffer = Memory.Chtenie(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, buffer);
+                        Memory.Zapis(Processes[Tekushiy].Zayavki[CurrentRequest].VTablicu, Processes[Tekushiy].Zayavki[CurrentRequest].VDes, TotalCopied, buffer);
                         TotalCopied++;
 #endif
                     }
                     break;
 
-                case RequestTypes.MemoryToHDD:
+                case RequestTypes.IzMemory:
                     // если есть доступ к источнику и приемнику
-                    if (Memory.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, false) && HDD.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied,false))
+                    if (Memory.UstanovlenMutex(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, false) && HDD.ProveritMutex(Processes[Tekushiy].Zayavki[CurrentRequest].VFile, Processes[Tekushiy].Zayavki[CurrentRequest].NomerFB, TotalCopied,false))
                     {
                         // считываем и записываем
-                        buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        HDD.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
+                        buffer = Memory.Chtenie(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, buffer);
+                        HDD.Zapis(Processes[Tekushiy].Zayavki[CurrentRequest].VFile, Processes[Tekushiy].Zayavki[CurrentRequest].NomerFB, TotalCopied, buffer);
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
-                        buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        HDD.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
+                        buffer = Memory.Chtenie(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, buffer);
+                        HDD.Zapis(Processes[Tekushiy].Zayavki[CurrentRequest].VFile, Processes[Tekushiy].Zayavki[CurrentRequest].NomerFB, TotalCopied, buffer);
                         TotalCopied++;
 #endif
                     }
                     break;
 
-                case RequestTypes.HDDToMemory:
+                case RequestTypes.VMemory:
                     // если есть доступ к источнику и приемнику
-                    if (HDD.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied,true) && Memory.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, true))
+                    if (HDD.ProveritMutex(Processes[Tekushiy].Zayavki[CurrentRequest].IzFile, Processes[Tekushiy].Zayavki[CurrentRequest].NomerFB, TotalCopied,true) && Memory.UstanovlenMutex(Processes[Tekushiy].Zayavki[CurrentRequest].VTablicu, Processes[Tekushiy].Zayavki[CurrentRequest].VDes, TotalCopied, true))
                     {
                         // считываем и записываем
-                        buffer = HDD.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
+                        buffer = HDD.Chtenie(Processes[Tekushiy].Zayavki[CurrentRequest].IzFile, Processes[Tekushiy].Zayavki[CurrentRequest].NomerFB, TotalCopied, buffer);
+                        Memory.Zapis(Processes[Tekushiy].Zayavki[CurrentRequest].VTablicu, Processes[Tekushiy].Zayavki[CurrentRequest].VDes, TotalCopied, buffer);
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
-                        buffer = HDD.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
+                        buffer = HDD.Chtenie(Processes[Tekushiy].Zayavki[CurrentRequest].IzFile, Processes[Tekushiy].Zayavki[CurrentRequest].NomerFB, TotalCopied, buffer);
+                        Memory.Zapis(Processes[Tekushiy].Zayavki[CurrentRequest].VTablicu, Processes[Tekushiy].Zayavki[CurrentRequest].VDes, TotalCopied, buffer);
                         TotalCopied++;
 #endif
                     }
                     break;
-                case RequestTypes.Action:
+                case RequestTypes.Deistvie:
                     // если есть доступ к источнику
-                    if (Memory.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, false))
+                    if (Memory.UstanovlenMutex(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, false))
                     {
                         // считываем и записываем измененное
-                        buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(255 - buffer));
+                        buffer = Memory.Chtenie(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, buffer);
+                        Memory.Zapis(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, (byte)(255 - buffer));
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
-                        buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(255 - buffer));
+                        buffer = Memory.Chtenie(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, buffer);
+                        Memory.Zapis(Processes[Tekushiy].Zayavki[CurrentRequest].IzTablici, Processes[Tekushiy].Zayavki[CurrentRequest].IzDes, TotalCopied, (byte)(255 - buffer));
                         TotalCopied++;
 #endif
                     }
@@ -157,20 +157,20 @@ namespace OS
                 TotalCopied = 0;
             }
             // если это была последняя заявка процесса - процесс выполнен
-            if (CurrentRequest == Processes[CurrentProcessIndex].Requests.Length)
-                Processes[CurrentProcessIndex].State = ProcessState.Completed;
+            if (CurrentRequest == Processes[Tekushiy].Zayavki.Length)
+                Processes[Tekushiy].Sostoyania = Sostoyania.Vipolnen;
             // иначе сохраняем данные в его контекст и приостанавливаем
             else
             {
-                Processes[CurrentProcessIndex].Context.CurrentRequest = CurrentRequest;
-                Processes[CurrentProcessIndex].Context.TotalCopied = TotalCopied;
-                Processes[CurrentProcessIndex].State = ProcessState.Paused;
+                Processes[Tekushiy].Context.Tekushaa = CurrentRequest;
+                Processes[Tekushiy].Context.TotalCopied = TotalCopied;
+                Processes[Tekushiy].Sostoyania = Sostoyania.Zhdet;
             }
 
             // следующий процесс на выполнение
-            CurrentProcessIndex = FindNextProcess();
-            if (CurrentProcessIndex != -1)
-                Processes[CurrentProcessIndex].State = ProcessState.Active;
+            Tekushiy = PerekluchitProccess();
+            if (Tekushiy != -1)
+                Processes[Tekushiy].Sostoyania = Sostoyania.Vipolnyaetsa;
         }
 
 #if TM_RR
@@ -178,15 +178,15 @@ namespace OS
         /// Поиск нового процесса RoundRobin
         /// </summary>
         /// <returns>Возвращает номер процесса на выполнение. -1 - нет процесса для выполнения</returns>
-        private static int FindNextProcess()
+        private static int PerekluchitProccess()
         {
             // начинаем с текущего+1 и до последнего
-            for (int i = CurrentProcessIndex+1; i < GlobalConsts.ProcessesCount; i++)
-                if (Processes[i].State != ProcessState.Completed)
+            for (int i = Tekushiy+1; i < GlobalConsts.ProcessesCount; i++)
+                if (Processes[i].Sostoyania != Sostoyania.Vipolnen)
                     return i;
             // начинаем с 0 до текущего
-            for (int i = 0; i < CurrentProcessIndex + 1; i++)
-                if (Processes[i].State != ProcessState.Completed)
+            for (int i = 0; i < Tekushiy + 1; i++)
+                if (Processes[i].Sostoyania != Sostoyania.Vipolnen)
                     return i;
             // если все процессы выполнены
             return -1;
