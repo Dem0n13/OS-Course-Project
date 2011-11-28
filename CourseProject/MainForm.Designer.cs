@@ -67,6 +67,7 @@
             this.DGRequsts.AllowUserToDeleteRows = false;
             this.DGRequsts.AllowUserToResizeColumns = false;
             this.DGRequsts.AllowUserToResizeRows = false;
+            this.DGRequsts.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.DGRequsts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DGRequsts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Процесс,
@@ -112,6 +113,7 @@
             // 
             // PagesInMemory
             // 
+            this.PagesInMemory.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.PagesInMemory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.PagesInMemory.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column8,
@@ -168,6 +170,7 @@
             this.DescriptionPages.AllowUserToDeleteRows = false;
             this.DescriptionPages.AllowUserToResizeColumns = false;
             this.DescriptionPages.AllowUserToResizeRows = false;
+            this.DescriptionPages.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.DescriptionPages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DescriptionPages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DescriptionPages.GridColor = System.Drawing.Color.DimGray;
@@ -186,6 +189,7 @@
             this.DescriptionTable.AllowUserToDeleteRows = false;
             this.DescriptionTable.AllowUserToResizeColumns = false;
             this.DescriptionTable.AllowUserToResizeRows = false;
+            this.DescriptionTable.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.DescriptionTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DescriptionTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DescriptionTable.GridColor = System.Drawing.Color.DimGray;
@@ -198,6 +202,7 @@
             // 
             // Catalog
             // 
+            this.Catalog.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.Catalog.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.Catalog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Catalog.Location = new System.Drawing.Point(771, 431);
@@ -208,6 +213,7 @@
             // 
             // CellsArray
             // 
+            this.CellsArray.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.CellsArray.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.CellsArray.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CellsArray.Location = new System.Drawing.Point(771, 24);
@@ -218,6 +224,7 @@
             // 
             // RunStepBtn
             // 
+            this.RunStepBtn.BackColor = System.Drawing.Color.Gainsboro;
             this.tableLayoutPanel1.SetColumnSpan(this.RunStepBtn, 2);
             this.RunStepBtn.Dock = System.Windows.Forms.DockStyle.Fill;
             this.RunStepBtn.Location = new System.Drawing.Point(3, 371);
@@ -226,7 +233,7 @@
             this.RunStepBtn.Size = new System.Drawing.Size(762, 32);
             this.RunStepBtn.TabIndex = 0;
             this.RunStepBtn.Text = "Следующая заявка";
-            this.RunStepBtn.UseVisualStyleBackColor = true;
+            this.RunStepBtn.UseVisualStyleBackColor = false;
             this.RunStepBtn.Click += new System.EventHandler(this.RunStepBtn_Click);
             // 
             // EditRequestBtn
@@ -299,6 +306,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label7.Location = new System.Drawing.Point(771, 367);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(444, 40);
@@ -342,6 +350,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(1218, 774);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.EditRequestBtn);
