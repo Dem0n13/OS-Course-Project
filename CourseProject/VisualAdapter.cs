@@ -108,7 +108,7 @@ namespace OS
 #endif
 #if (WSClock || NFU || LRU)
 
-            DGDescriptionPages.Columns[6].HeaderText = "А";
+            DGDescriptionPages.Columns[6].HeaderText = "Аccess";
             DGDescriptionPages.Columns[6].Width = 50;
 #endif
 

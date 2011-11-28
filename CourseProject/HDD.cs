@@ -55,15 +55,15 @@ namespace OS
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
                     CellsArray[temp].Data[j] = (byte)Program.RND.Next(0, 256);
-                    Catalog[0].FileSize++;
                 }
                 CellsArray[temp].IsFree = false;
                 Catalog[0].Indexes.Add(temp);
+                Catalog[0].FileSize++;
             }
             Catalog[0].IsOpen = false;
 
             //инициалицируем File2.f
-            Catalog[1].Filename = "File2.f";
+            Catalog[1].Filename = "Result.f";
 
 #endif
             #endregion;
