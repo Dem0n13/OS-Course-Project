@@ -39,7 +39,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;FS_WITH_INDEX_ENUM TM_RR NFU UI_REQUEST_EDITOR_ON_EDITOR_FORM IO_TWO_BYTES_PER_STEP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;FS_WITH_INDEX_ENUM TM_SRT ClockWithOneArrow UI_REQUEST_EDITOR_ON_EDITOR_FORM IO_TWO_BYTES_PER_STEP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>

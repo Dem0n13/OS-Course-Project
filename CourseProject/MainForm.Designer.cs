@@ -65,18 +65,19 @@
             this.DGRequsts.AllowUserToDeleteRows = false;
             this.DGRequsts.AllowUserToResizeColumns = false;
             this.DGRequsts.AllowUserToResizeRows = false;
+            this.DGRequsts.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.DGRequsts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DGRequsts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Процесс,
             this.Заявка,
             this.Column13});
-            this.DGRequsts.Location = new System.Drawing.Point(142, 37);
+            this.DGRequsts.Location = new System.Drawing.Point(12, 33);
             this.DGRequsts.MultiSelect = false;
             this.DGRequsts.Name = "DGRequsts";
             this.DGRequsts.ReadOnly = true;
             this.DGRequsts.RowHeadersVisible = false;
             this.DGRequsts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DGRequsts.Size = new System.Drawing.Size(660, 246);
+            this.DGRequsts.Size = new System.Drawing.Size(535, 156);
             this.DGRequsts.TabIndex = 5;
             this.DGRequsts.SelectionChanged += new System.EventHandler(this.DGRequsts_SelectionChanged);
             // 
@@ -108,6 +109,7 @@
             // 
             // PagesInMemory
             // 
+            this.PagesInMemory.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.PagesInMemory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.PagesInMemory.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column8,
@@ -116,7 +118,7 @@
             this.Column11,
             this.Column12});
             this.PagesInMemory.GridColor = System.Drawing.Color.DimGray;
-            this.PagesInMemory.Location = new System.Drawing.Point(583, 318);
+            this.PagesInMemory.Location = new System.Drawing.Point(577, 219);
             this.PagesInMemory.Name = "PagesInMemory";
             this.PagesInMemory.RowHeadersVisible = false;
             this.PagesInMemory.Size = new System.Drawing.Size(219, 262);
@@ -162,9 +164,10 @@
             this.DescriptionPages.AllowUserToDeleteRows = false;
             this.DescriptionPages.AllowUserToResizeColumns = false;
             this.DescriptionPages.AllowUserToResizeRows = false;
+            this.DescriptionPages.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.DescriptionPages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DescriptionPages.GridColor = System.Drawing.Color.DimGray;
-            this.DescriptionPages.Location = new System.Drawing.Point(212, 318);
+            this.DescriptionPages.Location = new System.Drawing.Point(206, 218);
             this.DescriptionPages.MultiSelect = false;
             this.DescriptionPages.Name = "DescriptionPages";
             this.DescriptionPages.RowHeadersVisible = false;
@@ -178,9 +181,10 @@
             this.DescriptionTable.AllowUserToDeleteRows = false;
             this.DescriptionTable.AllowUserToResizeColumns = false;
             this.DescriptionTable.AllowUserToResizeRows = false;
+            this.DescriptionTable.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.DescriptionTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DescriptionTable.GridColor = System.Drawing.Color.DimGray;
-            this.DescriptionTable.Location = new System.Drawing.Point(14, 319);
+            this.DescriptionTable.Location = new System.Drawing.Point(12, 219);
             this.DescriptionTable.Name = "DescriptionTable";
             this.DescriptionTable.RowHeadersVisible = false;
             this.DescriptionTable.Size = new System.Drawing.Size(188, 261);
@@ -188,25 +192,29 @@
             // 
             // Catalog
             // 
+            this.Catalog.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.Catalog.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.Catalog.Location = new System.Drawing.Point(809, 37);
+            this.Catalog.Location = new System.Drawing.Point(14, 510);
             this.Catalog.Name = "Catalog";
-            this.Catalog.Size = new System.Drawing.Size(282, 86);
+            this.Catalog.Size = new System.Drawing.Size(362, 239);
             this.Catalog.TabIndex = 0;
             // 
             // CellsArray
             // 
+            this.CellsArray.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.CellsArray.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.CellsArray.Location = new System.Drawing.Point(809, 167);
+            this.CellsArray.Location = new System.Drawing.Point(382, 510);
             this.CellsArray.Name = "CellsArray";
-            this.CellsArray.Size = new System.Drawing.Size(282, 413);
+            this.CellsArray.Size = new System.Drawing.Size(408, 239);
             this.CellsArray.TabIndex = 4;
             // 
             // RunStepBtn
             // 
-            this.RunStepBtn.Location = new System.Drawing.Point(14, 37);
+            this.RunStepBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.RunStepBtn.ForeColor = System.Drawing.Color.Green;
+            this.RunStepBtn.Location = new System.Drawing.Point(553, 33);
             this.RunStepBtn.Name = "RunStepBtn";
-            this.RunStepBtn.Size = new System.Drawing.Size(113, 34);
+            this.RunStepBtn.Size = new System.Drawing.Size(237, 34);
             this.RunStepBtn.TabIndex = 0;
             this.RunStepBtn.Text = "Выполнить такт";
             this.RunStepBtn.UseVisualStyleBackColor = true;
@@ -226,7 +234,8 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(143, 10);
+            this.label1.ForeColor = System.Drawing.Color.Green;
+            this.label1.Location = new System.Drawing.Point(10, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(274, 24);
             this.label1.TabIndex = 6;
@@ -236,7 +245,8 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(15, 292);
+            this.label2.ForeColor = System.Drawing.Color.Green;
+            this.label2.Location = new System.Drawing.Point(8, 192);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(200, 24);
             this.label2.TabIndex = 7;
@@ -246,7 +256,8 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(208, 292);
+            this.label3.ForeColor = System.Drawing.Color.Green;
+            this.label3.Location = new System.Drawing.Point(214, 192);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(211, 24);
             this.label3.TabIndex = 8;
@@ -256,7 +267,8 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(579, 292);
+            this.label4.ForeColor = System.Drawing.Color.Green;
+            this.label4.Location = new System.Drawing.Point(573, 192);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(100, 24);
             this.label4.TabIndex = 9;
@@ -266,7 +278,8 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(805, 10);
+            this.label5.ForeColor = System.Drawing.Color.Green;
+            this.label5.Location = new System.Drawing.Point(10, 483);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(82, 24);
             this.label5.TabIndex = 10;
@@ -276,7 +289,8 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label6.Location = new System.Drawing.Point(808, 140);
+            this.label6.ForeColor = System.Drawing.Color.Green;
+            this.label6.Location = new System.Drawing.Point(378, 483);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(47, 24);
             this.label6.TabIndex = 11;
@@ -286,17 +300,19 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label7.Location = new System.Drawing.Point(423, 10);
+            this.label7.ForeColor = System.Drawing.Color.Green;
+            this.label7.Location = new System.Drawing.Point(549, 70);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 20);
+            this.label7.Size = new System.Drawing.Size(241, 20);
             this.label7.TabIndex = 12;
-            this.label7.Text = "label7";
+            this.label7.Text = "Процесс на выполнение ХХ";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1107, 595);
+            this.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.ClientSize = new System.Drawing.Size(802, 758);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -314,7 +330,7 @@
             this.Controls.Add(this.CellsArray);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Курсовой проект";
+            this.Text = "Паршин Сергей, курсовой по ОС";
             ((System.ComponentModel.ISupportInitialize)(this.DGRequsts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PagesInMemory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionPages)).EndInit();
