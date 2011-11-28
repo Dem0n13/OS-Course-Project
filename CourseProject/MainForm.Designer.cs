@@ -89,7 +89,7 @@
             this.Процесс.Name = "Процесс";
             this.Процесс.ReadOnly = true;
             this.Процесс.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Процесс.Width = 62;
+            this.Процесс.Width = 71;
             // 
             // Заявка
             // 
@@ -106,7 +106,7 @@
             this.Column13.Name = "Column13";
             this.Column13.ReadOnly = true;
             this.Column13.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Column13.Width = 37;
+            this.Column13.Width = 42;
             // 
             // PagesInMemory
             // 
@@ -136,28 +136,28 @@
             this.Column9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column9.HeaderText = "0";
             this.Column9.Name = "Column9";
-            this.Column9.Width = 38;
+            this.Column9.Width = 40;
             // 
             // Column10
             // 
             this.Column10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column10.HeaderText = "1";
             this.Column10.Name = "Column10";
-            this.Column10.Width = 38;
+            this.Column10.Width = 40;
             // 
             // Column11
             // 
             this.Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column11.HeaderText = "2";
             this.Column11.Name = "Column11";
-            this.Column11.Width = 38;
+            this.Column11.Width = 40;
             // 
             // Column12
             // 
             this.Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column12.HeaderText = "3";
             this.Column12.Name = "Column12";
-            this.Column12.Width = 38;
+            this.Column12.Width = 40;
             // 
             // DescriptionPages
             // 

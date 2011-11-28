@@ -136,7 +136,7 @@ namespace OS
                     {
                         // считываем и записываем измененное
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(255 - buffer));
+                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(buffer - 1));
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
