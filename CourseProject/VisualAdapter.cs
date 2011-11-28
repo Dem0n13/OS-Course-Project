@@ -53,8 +53,8 @@ namespace OS
             for (int i = 0; i < GlobalConsts.CountOfGroup; i++)
             {
                 //расставляем адреса в первой и третьей колонке колонке
-                DGDescriptionTable.Rows[i].Cells[0].Value = (Memory.Pages[i] as TableDescriptor).Address;
-                DGDescriptionTable.Rows[i].Cells[2].Value = (Memory.Pages[i] as TableDescriptor).TargetAddress.ToString();
+                DGDescriptionTable.Rows[i].Cells[0].Value = (Memory.Stranici[i] as DescriptorTablici).Adres;
+                DGDescriptionTable.Rows[i].Cells[2].Value = (Memory.Stranici[i] as DescriptorTablici).AdresTablici.ToString();
 
                 // расскрашиваем группы
                 //DGDescriptionTable.Rows[i].Cells[1].Style.BackColor = System.Drawing.Color.FromArgb(Program.RND.Next(100, 255), Program.RND.Next(100, 255), Program.RND.Next(100, 255));
@@ -63,8 +63,8 @@ namespace OS
             
             // Расстановка владельцев у таблиц дескрипторов
             for (int i = 0; i < GlobalConsts.ProcessesCount; i++)
-                foreach (TableDescriptor td in TaskManager.Processes[i].LogicAreas)
-                    DGDescriptionTable.Rows[Array.IndexOf(Memory.Pages, td)].Cells[1].Value += TaskManager.Processes[i].ID + ", ";
+                foreach (DescriptorTablici td in TaskManager.Processes[i].LogicAreas)
+                    DGDescriptionTable.Rows[Array.IndexOf(Memory.Stranici, td)].Cells[1].Value += TaskManager.Processes[i].Imya + ", ";
             
             //удаляем лишние символы ", " (запятая пробел)
             for (int i = 0; i < DGDescriptionTable.RowCount; i++)
@@ -120,7 +120,7 @@ namespace OS
                 {
                     DGDescriptionPages.Rows[j].Cells[0].Style.BackColor = DGDescriptionTable.Rows[i].Cells[1].Style.BackColor;
                     DGDescriptionPages.Rows[j].Cells[4].Style.BackColor = DGDescriptionTable.Rows[i].Cells[1].Style.BackColor;
-                    DGDescriptionPages.Rows[j].Cells[0].Value = (Memory.Pages[j+GlobalConsts.CountOfGroup] as PageDescriptor).Address;
+                    DGDescriptionPages.Rows[j].Cells[0].Value = (Memory.Stranici[j+GlobalConsts.CountOfGroup] as DescriptorStranici).Adres;
                 }
                 local_buf += GlobalConsts.SizesOfGroup[i];
             }
@@ -230,7 +230,7 @@ namespace OS
             DGCellsArray.RowCount = GlobalConsts.HDDCellsCount + GlobalConsts.PagesCount;
             DGCellsArray.ColumnCount = 7;
             DGCellsArray.RowHeadersVisible = false;
-            DGCellsArray.RowCount = HDD.CellsArray.Length;
+            DGCellsArray.RowCount = HDD.MassivYacheek.Length;
             DGCellsArray.RowHeadersVisible = false;
             DGCellsArray.Columns[0].HeaderText = "Адрес";
             DGCellsArray.Columns[1].HeaderText = "0";
@@ -251,7 +251,7 @@ namespace OS
             //расставляем адреса
             for (int i = 0; i < GlobalConsts.HDDCellsCount + GlobalConsts.PagesCount; i++)
             {
-                DGCellsArray.Rows[i].Cells[0].Value = HDD.CellsArray[i].Address;
+                DGCellsArray.Rows[i].Cells[0].Value = HDD.MassivYacheek[i].Address;
             }
             //красим swap
             for (int i = GlobalConsts.HDDCellsCount; i < GlobalConsts.HDDCellsCount + GlobalConsts.PagesCount; i++)
@@ -285,17 +285,17 @@ namespace OS
                 for (int j = 0; j < TaskManager.Processes[i].Requests.Length; j++, k++)
                 {
                     // текст
-                    DGRequests[0, k].Value = "Процесс " + TaskManager.Processes[i].ID;
+                    DGRequests[0, k].Value = "Процесс " + TaskManager.Processes[i].Imya;
                     DGRequests[1, k].Value = TaskManager.Processes[i].Requests[j].ToString();
                     DGRequests[2, k].Value = "";
                     // для текущих заявок активного и блокированного процесса выводить колво скопированных байт
-                    if (((TaskManager.Processes[i].State == ProcessState.Active) || (TaskManager.Processes[i].State == ProcessState.Paused)) && (TaskManager.Processes[i].Context.CurrentRequest == j))
-                        DGRequests[2, k].Value = TaskManager.Processes[i].Context.TotalCopied.ToString();
+                    if (((TaskManager.Processes[i].State == ProcessState.Active) || (TaskManager.Processes[i].State == ProcessState.Paused)) && (TaskManager.Processes[i].Context.TcuchayaZayavka == j))
+                        DGRequests[2, k].Value = TaskManager.Processes[i].Context.VsegiScopirovanno.ToString();
 
                     // раскрашиваем v3
-                    if ((j < TaskManager.Processes[i].Context.CurrentRequest) || (TaskManager.Processes[i].State == ProcessState.Completed))
+                    if ((j < TaskManager.Processes[i].Context.TcuchayaZayavka) || (TaskManager.Processes[i].State == ProcessState.Completed))
                         DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;
-                    else if (j == TaskManager.Processes[i].Context.CurrentRequest)
+                    else if (j == TaskManager.Processes[i].Context.TcuchayaZayavka)
                     {
                         //if (TaskManager.Processes[i].State == ProcessState.Active)
                         //    DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightGreen;
@@ -340,7 +340,7 @@ namespace OS
             }
 #endif
             //dfhsbf
-            StepButton.Text = "Следующий процесс: " + TaskManager.Processes[TaskManager.CurrentProcessIndex].ID;
+            StepButton.Text = "Следующий процесс: " + TaskManager.Processes[TaskManager.CurrentProcessIndex].Imya;
         }
 
 #if UI_REQUEST_EDITOR_ON_MAIN_FORM
@@ -457,12 +457,12 @@ namespace OS
             //заполняем таблицу дескрипторы страниц и раскрашиваем
             for (int i = 0; i < GlobalConsts.StartAddressAreaOfPages - GlobalConsts.StartAddressDescriptionPage; i++)
             {
-                DGDescriptionPages.Rows[i].Cells[1].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Present;
+                DGDescriptionPages.Rows[i].Cells[1].Value = (Memory.Stranici[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorStranici).Present;
                 //DGDescriptionPages[1, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Present == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
-                DGDescriptionPages.Rows[i].Cells[2].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Mutex;
+                DGDescriptionPages.Rows[i].Cells[2].Value = (Memory.Stranici[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorStranici).Mutex;
                 //DGDescriptionPages[2, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Mutex == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
-                DGDescriptionPages.Rows[i].Cells[3].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).AddressInSwap;
-                DGDescriptionPages.Rows[i].Cells[4].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).TargetAddress;
+                DGDescriptionPages.Rows[i].Cells[3].Value = (Memory.Stranici[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorStranici).AdresVfp;
+                DGDescriptionPages.Rows[i].Cells[4].Value = (Memory.Stranici[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorStranici).AdresVpamati;
 #if (WS || WSClock)
                 DGDescriptionPages.Rows[i].Cells[5].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).AgeOfPage;
 #endif
@@ -471,10 +471,10 @@ namespace OS
                 //DGDescriptionPages[5, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
 #endif
 #if (NFU ||LRU)
-                DGDescriptionPages.Rows[i].Cells[5].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Counter;
+                DGDescriptionPages.Rows[i].Cells[5].Value = (Memory.Stranici[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorStranici).Counter;
 #endif
 #if (WSClock||NFU ||LRU)
-                DGDescriptionPages.Rows[i].Cells[6].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access;
+                DGDescriptionPages.Rows[i].Cells[6].Value = (Memory.Stranici[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorStranici).Access;
                 //DGDescriptionPages[6, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
 #endif
             }
@@ -484,7 +484,7 @@ namespace OS
             {
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
-                    DGPagesInMemory.Rows[i].Cells[j+1].Value = (Memory.Pages[i + GlobalConsts.StartAddressAreaOfPages] as  Page).Data[j];
+                    DGPagesInMemory.Rows[i].Cells[j+1].Value = (Memory.Stranici[i + GlobalConsts.StartAddressAreaOfPages] as  Stranica).Dannyie[j];
                 }
             }
         }
@@ -538,7 +538,7 @@ namespace OS
             DGCatalog.RowCount = HDD.Catalog.Count;
             for (int i = 0; i < HDD.Catalog.Count; i++)
             {
-                DGCatalog.Rows[i].Cells[1].Value = HDD.Catalog[i].IsOpen;
+                DGCatalog.Rows[i].Cells[1].Value = HDD.Catalog[i].Otkrito;
                 //DGCatalog[1, i].Style.BackColor = HDD.Catalog[i].IsOpen == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
                 DGCatalog.Rows[i].Cells[0].Value = HDD.Catalog[i].Address;
                 DGCatalog.Rows[i].Cells[2].Value = HDD.Catalog[i].Filename;
@@ -550,12 +550,12 @@ namespace OS
 
             for (int i = 0; i < GlobalConsts.HDDCellsCount + GlobalConsts.PagesCount; i++)
             {
-                for (int j = 0; j < HDD.CellsArray[0].Data.Length; j++)
+                for (int j = 0; j < HDD.MassivYacheek[0].Data.Length; j++)
                 {
-                    DGCellsArray.Rows[i].Cells[1 + j].Value = HDD.CellsArray[i].Data[j];
+                    DGCellsArray.Rows[i].Cells[1 + j].Value = HDD.MassivYacheek[i].Data[j];
                 }
-                DGCellsArray.Rows[i].Cells[5].Value = HDD.CellsArray[i].Next;
-                DGCellsArray.Rows[i].Cells[6].Value = HDD.CellsArray[i].IsFree;
+                DGCellsArray.Rows[i].Cells[5].Value = HDD.MassivYacheek[i].Next;
+                DGCellsArray.Rows[i].Cells[6].Value = HDD.MassivYacheek[i].Zanyato;
                 //DGCellsArray.Rows[i].Cells[6].Style.BackColor = HDD.CellsArray[i].IsFree == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
             }
 #endif

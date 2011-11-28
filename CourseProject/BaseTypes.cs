@@ -12,12 +12,12 @@ namespace OS
     /// <summary>
     /// Процесс
     /// </summary>
-    public class Process
+    public class Proces
     {
         /// <summary>
         /// Имя процесса
         /// </summary>
-        public string ID;
+        public string Imya;
 
         /// <summary>
         /// Статус процесса
@@ -32,15 +32,15 @@ namespace OS
         /// <summary>
         /// Логические пространства процесса
         /// </summary>
-        public TableDescriptor[] LogicAreas;
+        public DescriptorTablici[] LogicAreas;
 
         /// <summary>
         /// Контекст процесса для реализации псевдопараллельной работы
         /// </summary>
         public ProcessContext Context = new ProcessContext()
         {
-            CurrentRequest = 0,
-            TotalCopied = 0
+            TcuchayaZayavka = 0,
+            VsegiScopirovanno = 0
         };
     }
 
@@ -52,12 +52,12 @@ namespace OS
         /// <summary>
         /// Номер текущей заявки процесса
         /// </summary>
-        public int CurrentRequest;
+        public int TcuchayaZayavka;
 
         /// <summary>
         /// Прогресс выполнения текущей заявки
         /// </summary>
-        public int TotalCopied;
+        public int VsegiScopirovanno;
     }
 
     /// <summary>
@@ -143,17 +143,17 @@ namespace OS
     /// <summary>
     /// Интерфейс, описывает все, что может содержать страница основной памяти
     /// </summary>
-    public interface IMemoryPage {}
+    public interface InterfacePamyati {}
 
     /// <summary>
     /// Дескриптор таблицы
     /// </summary>
-    public class TableDescriptor : IMemoryPage
+    public class DescriptorTablici : InterfacePamyati
     {
         /// <summary>
         /// Адрес таблицы дескрипторов в памяти 
         /// </summary>
-        public int TargetAddress;
+        public int AdresTablici;
 
         /// <summary>
         /// Размер группы
@@ -163,18 +163,18 @@ namespace OS
         /// <summary>
         /// Абсолютный адрес в адресном пространстве 
         /// </summary>
-        public int Address;
+        public int Adres;
     }
 
     /// <summary>
     /// Дескриптор страницы
     /// </summary>
-    public class PageDescriptor : IMemoryPage
+    public class DescriptorStranici : InterfacePamyati
     {
         /// <summary>
         /// Адрес страницы
         /// </summary>
-        public int TargetAddress;
+        public int AdresVpamati;
 
         /// <summary>
         /// Бит присутствия в памяти. 0-нет 1-есть
@@ -184,7 +184,7 @@ namespace OS
         /// <summary>
         /// Адрес страницы в файле подкачки
         /// </summary>
-        public int AddressInSwap;
+        public int AdresVfp;
 
         /// <summary>
         /// Бит доступа (Для процессов)
@@ -209,7 +209,7 @@ namespace OS
         /// <summary>
         /// Абсолютный адрес в адресном пространстве 
         /// </summary>
-        public int Address;
+        public int Adres;
 
 #if (WS || WSClock)
         /// <summary>
@@ -222,17 +222,17 @@ namespace OS
     /// <summary>
     /// Сама страница с данными
     /// </summary>
-    public class Page : IMemoryPage
+    public class Stranica : InterfacePamyati
     {
         /// <summary>
         /// Массив байтов страницы
         /// </summary>
-        public byte[] Data;
+        public byte[] Dannyie;
 
         /// <summary>
         /// Признак заполненности страницы
         /// </summary>
-        public bool Dirty = false;
+        public bool Zanyato = false;
 
         /// <summary>
         /// Абсолютный адрес в адресном пространстве 
@@ -312,7 +312,7 @@ namespace OS
     /// <summary>
     /// Описание одного пункта из этой таблицы. ФС - связанная последовательность.
     /// </summary>
-    public class CatalogRecord
+    public class FailovayaZapis
     {
         /// <summary>
         /// Адрес записи каталога
@@ -327,7 +327,7 @@ namespace OS
         /// <summary>
         /// открыт ли?
         /// </summary>
-        public bool IsOpen;
+        public bool Otkrito;
 
         /// <summary>
         /// Начальный индекс, занятые файлом
@@ -349,7 +349,7 @@ namespace OS
     /// Ячейка памяти ВЗУ файловая система которй -
     /// связанная последовательность
     /// </summary>
-    public class HDDCell
+    public class YacheikaDiska
     {
         /// <summary>
         /// Данные в ячейке
@@ -364,7 +364,7 @@ namespace OS
         /// <summary>
         /// Свободно ли?
         /// </summary>
-        public bool IsFree;
+        public bool Zanyato;
 
         /// <summary>
         /// Адрес следующей ячейки

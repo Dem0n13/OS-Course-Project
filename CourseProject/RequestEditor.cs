@@ -24,15 +24,15 @@ namespace OS
             request = TaskManager.Processes[i_process].Requests[i_request];
 
             // диапазоны значений таблиц дескрипторов
-            SUpDn1.Minimum = Array.IndexOf(Memory.Pages, TaskManager.Processes[i_process].LogicAreas[0]);
-            SUpDn1.Maximum = Array.IndexOf(Memory.Pages, TaskManager.Processes[i_process].LogicAreas[TaskManager.Processes[i_process].LogicAreas.Length - 1]);
-            DUpDn1.Minimum = Array.IndexOf(Memory.Pages, TaskManager.Processes[i_process].LogicAreas[0]);
-            DUpDn1.Maximum = Array.IndexOf(Memory.Pages, TaskManager.Processes[i_process].LogicAreas[TaskManager.Processes[i_process].LogicAreas.Length - 1]);
+            SUpDn1.Minimum = Array.IndexOf(Memory.Stranici, TaskManager.Processes[i_process].LogicAreas[0]);
+            SUpDn1.Maximum = Array.IndexOf(Memory.Stranici, TaskManager.Processes[i_process].LogicAreas[TaskManager.Processes[i_process].LogicAreas.Length - 1]);
+            DUpDn1.Minimum = Array.IndexOf(Memory.Stranici, TaskManager.Processes[i_process].LogicAreas[0]);
+            DUpDn1.Maximum = Array.IndexOf(Memory.Stranici, TaskManager.Processes[i_process].LogicAreas[TaskManager.Processes[i_process].LogicAreas.Length - 1]);
 
             // заполнение начальных данных с редактируемой заявки
             RequestTypeBox.SelectedIndex = (int)request.Type;
-            SBox.Items.AddRange(HDD.Catalog.ToArray<CatalogRecord>()); SBox.SelectedIndex = 0;
-            DBox.Items.AddRange(HDD.Catalog.ToArray<CatalogRecord>()); DBox.SelectedIndex = 0;
+            SBox.Items.AddRange(HDD.Catalog.ToArray<FailovayaZapis>()); SBox.SelectedIndex = 0;
+            DBox.Items.AddRange(HDD.Catalog.ToArray<FailovayaZapis>()); DBox.SelectedIndex = 0;
             switch (request.Type)
             {
                 case RequestTypes.MemoryToMemory:

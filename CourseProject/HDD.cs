@@ -19,12 +19,12 @@ namespace OS
         /// <summary>
         /// Каталог
         /// </summary>
-        public static List<CatalogRecord> Catalog = new List<CatalogRecord>();
+        public static List<FailovayaZapis> Catalog = new List<FailovayaZapis>();
 
         /// <summary>
         /// Массив данных на жестком диске
         /// </summary>
-        public static HDDCell[] CellsArray = new HDDCell[GlobalConsts.HDDCellsCount + SwapFileSize];
+        public static YacheikaDiska[] MassivYacheek = new YacheikaDiska[GlobalConsts.HDDCellsCount + SwapFileSize];
 
         static HDD()
         {
@@ -125,19 +125,19 @@ namespace OS
             for (int i = 0; i < GlobalConsts.HDDCellsCount + SwapFileSize; i++)
             {
                 //ставим адрес у ячейки
-                CellsArray[i] = new HDDCell()
+                MassivYacheek[i] = new YacheikaDiska()
                     {
                         Address = i
                     };
-                CellsArray[i].IsFree = true;
-                CellsArray[i].Next = -1;
-                CellsArray[i].Data = new byte[GlobalConsts.PageSize];
+                MassivYacheek[i].Zanyato = true;
+                MassivYacheek[i].Next = -1;
+                MassivYacheek[i].Data = new byte[GlobalConsts.PageSize];
             }
             int temp = 7; //с какого начинать адреса писать первый файл
             NonRepeatEnum NESForHDD = new NonRepeatEnum(0, 15);
             
-            Catalog.Add(new CatalogRecord() { Address = 0 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1,FileSize=0,Filename="File1" });
-            Catalog.Add(new CatalogRecord() { Address = 1 + GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1, FileSize = 0, Filename = "File2" });
+            Catalog.Add(new FailovayaZapis() { Address = 0 + GlobalConsts.StartCatalogRecords, Otkrito = false, StartIndex = -1,FileSize=0,Filename="File1" });
+            Catalog.Add(new FailovayaZapis() { Address = 1 + GlobalConsts.StartCatalogRecords, Otkrito = false, StartIndex = -1, FileSize = 0, Filename = "File2" });
                 //Catalog[i] = new CatalogRecord();
                 //Catalog[i].Address = i + GlobalConsts.StartCatalogRecords;
                 //Catalog[i].IsOpen = false;
@@ -149,32 +149,32 @@ namespace OS
             Catalog[0].StartIndex = temp;
             for (int j = 0; j < GlobalConsts.PageSize; j++)
             {
-                CellsArray[Catalog[0].StartIndex].Data[j] = (byte)Program.RND.Next(0, 256);
+                MassivYacheek[Catalog[0].StartIndex].Data[j] = (byte)Program.RND.Next(0, 256);
             }
             Catalog[0].FileSize++;
-            CellsArray[Catalog[0].StartIndex].IsFree = false;
+            MassivYacheek[Catalog[0].StartIndex].Zanyato = false;
             //пишем остальные 4 блока
             int prev = Catalog[0].StartIndex;
             for (int i = 0; i < 4; i++)
             {
 
                 Catalog[0].FileSize++;
-                CellsArray[prev].IsFree = false;
+                MassivYacheek[prev].Zanyato = false;
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
-                    CellsArray[prev].Data[j] = (byte)Program.RND.Next(0, 256);
+                    MassivYacheek[prev].Data[j] = (byte)Program.RND.Next(0, 256);
                 }
-                CellsArray[prev].IsFree = false;
+                MassivYacheek[prev].Zanyato = false;
                 temp++;
-                CellsArray[prev].Next = temp;
-                prev = CellsArray[prev].Next;
+                MassivYacheek[prev].Next = temp;
+                prev = MassivYacheek[prev].Next;
             }
             ////конец файла start.txt+1блок
-            CellsArray[prev].Next = -1;
-            CellsArray[prev].IsFree = false;
+            MassivYacheek[prev].Next = -1;
+            MassivYacheek[prev].Zanyato = false;
             for (int j = 0; j < GlobalConsts.PageSize; j++)
             {
-                CellsArray[prev].Data[j] = (byte)Program.RND.Next(0, 256);
+                MassivYacheek[prev].Data[j] = (byte)Program.RND.Next(0, 256);
             }
 
             //инициалицируем result.txt
@@ -186,7 +186,7 @@ namespace OS
             //}
 
 
-            Catalog[0].IsOpen = false;
+            Catalog[0].Otkrito = false;
 
 
             
@@ -295,7 +295,7 @@ namespace OS
                 return true;
             }
             // проверка, открыт ли файл на запись
-            if ((Catalog[file_i].IsOpen) && (offset == 0))
+            if ((Catalog[file_i].Otkrito) && (offset == 0))
             {
                 return false;
             }
@@ -309,7 +309,7 @@ namespace OS
         /// <param name="fileblock">Номер файлового блока (0 - первый блок)</param>
         /// <param name="offset">Смещение относительно начала блока</param>
         /// <param name="data">Буфер для чтения</param>
-        public static byte ReadByte(string filename, int fileblock, int offset, byte data)
+        public static byte ChitatByte(string filename, int fileblock, int offset, byte data)
         {
             data = 0;
             // нахождение файла в каталоге
@@ -321,22 +321,22 @@ namespace OS
 #if FS_WITH_INDEX_SEQ
             int cur_index=Catalog[file_i].StartIndex;
             int counter = 0;
-            while (CellsArray[cur_index].Next!=-1)
+            while (MassivYacheek[cur_index].Next!=-1)
             {
                 if (counter==fileblock)
                 {
                     break;
                 }
                 counter++;
-                cur_index = CellsArray[cur_index].Next;
+                cur_index = MassivYacheek[cur_index].Next;
             }
             int block_a = cur_index;
 #endif
-            Catalog[file_i].IsOpen = true;
-            data = CellsArray[block_a].Data[offset];
+            Catalog[file_i].Otkrito = true;
+            data = MassivYacheek[block_a].Data[offset];
             if (offset == 3)
             {
-                Catalog[file_i].IsOpen = false;
+                Catalog[file_i].Otkrito = false;
             }
             return data;
         }
@@ -349,7 +349,7 @@ namespace OS
         /// <param name="offset">Смещение относительно начала блока</param>
         /// <param name="data">Буфер на запись</param>
         /// <returns>true - запись завершена, false - запись невозможна</returns>
-        public static void WriteByte(string filename, int fileblock, int offset, byte data)
+        public static void PisatByte(string filename, int fileblock, int offset, byte data)
         {
             // нахождение файла в каталоге
             if (FindFile(filename) == -1)
@@ -373,14 +373,14 @@ namespace OS
             }
             int cur_index = Catalog[file_i].StartIndex;
             int counter = 0;
-            while (CellsArray[cur_index].Next!=-1)
+            while (MassivYacheek[cur_index].Next!=-1)
             {
                 if (counter==fileblock)
                 {
                     break;
                 }
                 counter++;
-                cur_index = CellsArray[cur_index].Next;
+                cur_index = MassivYacheek[cur_index].Next;
             }
             while (counter < fileblock)
             {
@@ -389,10 +389,10 @@ namespace OS
             }
             int block_a = cur_index;
 #endif
-            Catalog[file_i].IsOpen = true;
-            CellsArray[block_a].Data[offset] = data;
+            Catalog[file_i].Otkrito = true;
+            MassivYacheek[block_a].Data[offset] = data;
             if (offset == 3)
-                Catalog[file_i].IsOpen = false;
+                Catalog[file_i].Otkrito = false;
         }
 
 
@@ -436,23 +436,23 @@ namespace OS
                     //while (CellsArray[CurrentFileBlock].Next != -1)
                     for (;;)
                     {
-                        if (CellsArray[CurrentFileBlock].Next == -1)
+                        if (MassivYacheek[CurrentFileBlock].Next == -1)
                         {
                             break;
                         }
-                        CurrentFileBlock = CellsArray[CurrentFileBlock].Next;
+                        CurrentFileBlock = MassivYacheek[CurrentFileBlock].Next;
                     }                    
                     
                     //нашли, ставим адрес Next найденой свободной
-                    CellsArray[CurrentFileBlock].Next = FindFreeFileBlock();
-                    CellsArray[CellsArray[CurrentFileBlock].Next].IsFree = false;
+                    MassivYacheek[CurrentFileBlock].Next = FindFreeFileBlock();
+                    MassivYacheek[MassivYacheek[CurrentFileBlock].Next].Zanyato = false;
                     Catalog[file].FileSize++;
-                    return CellsArray[CurrentFileBlock].Next;
+                    return MassivYacheek[CurrentFileBlock].Next;
                 }
                 if (Catalog[file].StartIndex == -1)
                 {
                     Catalog[file].StartIndex = FindFreeFileBlock();
-                    CellsArray[Catalog[file].StartIndex].IsFree = false;
+                    MassivYacheek[Catalog[file].StartIndex].Zanyato = false;
                     Catalog[file].FileSize++;
                     return Catalog[file].StartIndex;
                 }
@@ -469,7 +469,7 @@ namespace OS
         {
             for (int i = 0; i < GlobalConsts.StartSwapArea; i++)
             {
-                if (CellsArray[i].IsFree == true)
+                if (MassivYacheek[i].Zanyato == true)
                 {
                     return i;
                 }
@@ -479,7 +479,7 @@ namespace OS
 
         public static void CreateFile(String FileName)
         {
-            Catalog.Add(new CatalogRecord() { Address = Catalog.Count+GlobalConsts.StartCatalogRecords, IsOpen = false, StartIndex = -1,Filename=FileName }); ;
+            Catalog.Add(new FailovayaZapis() { Address = Catalog.Count+GlobalConsts.StartCatalogRecords, Otkrito = false, StartIndex = -1,Filename=FileName }); ;
         }
 #endif
     }
