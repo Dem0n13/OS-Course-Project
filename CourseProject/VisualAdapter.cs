@@ -131,6 +131,12 @@ namespace OS
                 DGPagesInMemory.Rows[i].Cells[0].Value = i + GlobalConsts.StartAddressAreaOfPages;
             }
 
+            // автосайз столбцов
+            foreach (DataGridViewColumn column in DGDescriptionPages.Columns)
+            {
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            }
+
             #endregion
 
             #region Заявки
@@ -265,6 +271,16 @@ namespace OS
 #endif
             #endregion
 
+            // автосайз столбцов
+            foreach (DataGridViewColumn column in DGCatalog.Columns)
+            {
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            }
+
+            foreach (DataGridViewColumn column in DGCellsArray.Columns)
+            {
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            }
             #endregion
 
             // первое обновление
