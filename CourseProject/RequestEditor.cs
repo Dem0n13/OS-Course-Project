@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace OS
@@ -31,8 +25,8 @@ namespace OS
 
             // заполнение начальных данных с редактируемой заявки
             RequestTypeBox.SelectedIndex = (int)request.Type;
-            SBox.Items.AddRange(HDD.Catalog.ToArray<CatalogRecord>()); SBox.SelectedIndex = 0;
-            DBox.Items.AddRange(HDD.Catalog.ToArray<CatalogRecord>()); DBox.SelectedIndex = 0;
+            SBox.Items.AddRange(HDD.Catalog.ToArray()); SBox.SelectedIndex = 0;
+            DBox.Items.AddRange(HDD.Catalog.ToArray()); DBox.SelectedIndex = 0;
             switch (request.Type)
             {
                 case RequestTypes.MemoryToMemory:
