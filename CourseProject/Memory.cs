@@ -1,4 +1,6 @@
-﻿namespace OS
+﻿using System.Collections.Generic;
+
+namespace OS
 {
     /// <summary>
     /// Класс основной памяти (ОЗУ)
