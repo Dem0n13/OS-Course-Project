@@ -57,12 +57,12 @@ namespace OS
         /// <summary>
         /// Размеры групп страниц. Первая группа должна помещаться в остальных
         /// </summary>
-        public static int[] SizesOfGroup = new int[] { 5, 5, 5 };
+        public static int[] SizesOfGroup = new int[] { 3, 3, 5 };
 
         /// <summary>
         /// Объем в оперативе под страницы.
         /// </summary>
-        public static int PagesAreaSize = 7;
+        public static int PagesAreaSize = 4;
 
         /// <summary>
         /// количество групп

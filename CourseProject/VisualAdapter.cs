@@ -292,14 +292,14 @@ namespace OS
                         DGRequests[2, k].Value = TaskManager.Processes[i].Context.TotalCopied.ToString();
 
                     // раскрашиваем v3
-                    if ((j < TaskManager.Processes[i].Context.CurrentRequest) || (TaskManager.Processes[i].State == ProcessState.Completed))
+                    /*if ((j < TaskManager.Processes[i].Context.CurrentRequest) || (TaskManager.Processes[i].State == ProcessState.Completed))
                         DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;
-                    else if (j == TaskManager.Processes[i].Context.CurrentRequest)
+                    else */if (j == TaskManager.Processes[i].Context.CurrentRequest)
                     {
-                        //if (TaskManager.Processes[i].State == ProcessState.Active)
-                        //    DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightGreen;
-                        //if (TaskManager.Processes[i].State == ProcessState.Paused)
-                        //    DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.SandyBrown;
+                        if (TaskManager.Processes[i].State == ProcessState.Active)
+                            DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.LightSteelBlue;
+                        if (TaskManager.Processes[i].State == ProcessState.Paused)
+                            DGRequests.Rows[k].DefaultCellStyle.BackColor = System.Drawing.Color.SandyBrown;
                     }
                 }
             }
