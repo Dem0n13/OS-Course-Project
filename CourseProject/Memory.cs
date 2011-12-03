@@ -81,7 +81,7 @@ namespace OS
                     P = false,
                     Ssilka = -1,
                     M = false,
-                    SsailkaHDD = -1,
+                    SsilkaHDD = -1,
                     Address = i
 #if (WS || WSClock)
                     ,AgeOfPage=0
@@ -146,7 +146,7 @@ namespace OS
         public static bool UstanovlenMutex(int table, int descriptor, int offset, bool write)
         {
             // проверка, инициализирована ли страница
-            if (((Stranici[(Stranici[table] as TablicaDes).Ssilka + descriptor] as Des).Ssilka == -1) && ((Stranici[(Stranici[table] as TablicaDes).Ssilka + descriptor] as Des).SsailkaHDD == -1) && !write)
+            if (((Stranici[(Stranici[table] as TablicaDes).Ssilka + descriptor] as Des).Ssilka == -1) && ((Stranici[(Stranici[table] as TablicaDes).Ssilka + descriptor] as Des).SsilkaHDD == -1) && !write)
             {
                 return false;
             }
@@ -210,7 +210,7 @@ namespace OS
             if (!(Stranici[desc_a] as Des).P)
             {
                 // если нет в ФП, то дескриптор свободный
-                if ((Stranici[desc_a] as Des).SsailkaHDD == -1)
+                if ((Stranici[desc_a] as Des).SsilkaHDD == -1)
                 {
                     // если нет свободной страницы в памяти
                     if (PoicsSvobodnogoMEsta() == -1)
@@ -273,7 +273,7 @@ namespace OS
             if (AbsoluteAddress != -1)
             {
                 //смотрим в дескрипторе адрес на свапе(два случая -1 и x)
-                int AddressInSwap = (Stranici[AbsoluteAddress] as Des).SsailkaHDD;
+                int AddressInSwap = (Stranici[AbsoluteAddress] as Des).SsilkaHDD;
                 //попытка слить на свап несуществующую страницу или которой нет в ОП
                 if ((Stranici[AbsoluteAddress] as Des).Ssilka == -1 && (Stranici[AbsoluteAddress] as Des).P == false)
                 {
@@ -305,7 +305,7 @@ namespace OS
                             HDD.Yacheyki[i].Svobodna = false;
                             //ставим бит присутствия в 0
                             (Memory.Stranici[(Stranici[AbsoluteAddress] as Des).Address] as Des).P = false;
-                            (Memory.Stranici[(Stranici[AbsoluteAddress] as Des).Address] as Des).SsailkaHDD = i;
+                            (Memory.Stranici[(Stranici[AbsoluteAddress] as Des).Address] as Des).SsilkaHDD = i;
                             //выходим с адресом, куда записали
                             return i;
                         }
@@ -330,7 +330,7 @@ namespace OS
                     (Memory.Stranici[(Stranici[AbsoluteAddress] as Des).Address] as Des).Ssilka = -1;
                     //ставим бит присутствия в 0
                     (Memory.Stranici[(Stranici[AbsoluteAddress] as Des).Address] as Des).P = false;
-                    return (Stranici[AbsoluteAddress] as Des).SsailkaHDD;
+                    return (Stranici[AbsoluteAddress] as Des).SsilkaHDD;
                 }
             }
             return -1;
@@ -349,12 +349,12 @@ namespace OS
                 //ищем свободное место в ОП
                 int WhereIs = PoicsSvobodnogoMEsta();
                 //если все заебись
-                if (WhereIs != -1 && (Stranici[AbsoluteAddress] as Des).SsailkaHDD != -1 && (Stranici[AbsoluteAddress] as Des).P == false)
+                if (WhereIs != -1 && (Stranici[AbsoluteAddress] as Des).SsilkaHDD != -1 && (Stranici[AbsoluteAddress] as Des).P == false)
                 {
                     //копируем страницу в ОП
                     for (int i = 0; i < GlobalConsts.PageSize; i++)
                     {
-                        (Stranici[WhereIs] as Str).Data[i] = HDD.Yacheyki[(Stranici[AbsoluteAddress] as Des).SsailkaHDD].Data[i];
+                        (Stranici[WhereIs] as Str).Data[i] = HDD.Yacheyki[(Stranici[AbsoluteAddress] as Des).SsilkaHDD].Data[i];
                     }
                     //выставляем параметры присутствия в дескрипторе и прочее
                     (Stranici[AbsoluteAddress] as Des).P = true;

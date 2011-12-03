@@ -459,7 +459,7 @@ namespace OS
                 //DGDescriptionPages[1, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Present == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
                 DGDescriptionPages.Rows[i].Cells[2].Value = (Memory.Stranici[i + GlobalConsts.StartAddressDescriptionPage] as Des).M;
                 //DGDescriptionPages[2, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Mutex == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
-                DGDescriptionPages.Rows[i].Cells[3].Value = (Memory.Stranici[i + GlobalConsts.StartAddressDescriptionPage] as Des).SsailkaHDD;
+                DGDescriptionPages.Rows[i].Cells[3].Value = (Memory.Stranici[i + GlobalConsts.StartAddressDescriptionPage] as Des).SsilkaHDD;
                 DGDescriptionPages.Rows[i].Cells[4].Value = (Memory.Stranici[i + GlobalConsts.StartAddressDescriptionPage] as Des).Ssilka;
 #if (WS || WSClock)
                 DGDescriptionPages.Rows[i].Cells[5].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).AgeOfPage;

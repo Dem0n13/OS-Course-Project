@@ -184,7 +184,7 @@ namespace OS
         /// <summary>
         /// Адрес страницы в файле подкачки
         /// </summary>
-        public int SsailkaHDD;
+        public int SsilkaHDD;
 
         /// <summary>
         /// Бит доступа (Для процессов)
