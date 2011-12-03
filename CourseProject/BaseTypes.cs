@@ -17,27 +17,27 @@ namespace OS
         /// <summary>
         /// Имя процесса
         /// </summary>
-        public string ImyaProcessa;
+        public string ID;
 
         /// <summary>
         /// Статус процесса
         /// </summary>
-        public SostoyanieProcessa VipolnenoBytes = SostoyanieProcessa.NotProcessed;
+        public ProcessState State = ProcessState.NotProcessed;
 
         /// <summary>
         /// Массив заявок
         /// </summary>
-        public Deistviya[] Zayavki;
+        public Request[] Requests;
 
         /// <summary>
         /// Логические пространства процесса
         /// </summary>
-        public TableDescriptor[] LogichescoeProstanstvo;
+        public TableDescriptor[] LogicAreas;
 
         /// <summary>
         /// Контекст процесса для реализации псевдопараллельной работы
         /// </summary>
-        public ContextProcessa Context = new ContextProcessa()
+        public ProcessContext Context = new ProcessContext()
         {
             CurrentRequest = 0,
             TotalCopied = 0
@@ -47,7 +47,7 @@ namespace OS
     /// <summary>
     /// Контекст процесса
     /// </summary>
-    public struct ContextProcessa
+    public struct ProcessContext
     {
         /// <summary>
         /// Номер текущей заявки процесса
@@ -63,12 +63,12 @@ namespace OS
     /// <summary>
     /// Заявка
     /// </summary>
-    public class Deistviya
+    public class Request
     {
         /// <summary>
         /// Тип заявки
         /// </summary>
-        public TipDeistviya Type;
+        public RequestTypes Type;
 
         // Всевозможные адресные параметры (???)
         public string FromFile;
@@ -85,16 +85,16 @@ namespace OS
             string result = "";
             switch (Type)
             {
-                case TipDeistviya.MemoryToMemory:
+                case RequestTypes.MemoryToMemory:
                     result = String.Format("ОП ЛА={0}_{1} в ОП ЛА={2}_{3}", FromTable, FromDescriptor, ToTable, ToDescriptor);
                     break;
-                case TipDeistviya.MemoryToHDD:
+                case RequestTypes.MemoryToHDD:
                     result = String.Format("ОП ЛА={0}_{1} в Жесткий диск {2}, ФБ={3}", FromTable, FromDescriptor, ToFile, FileBlockNum);
                     break;
-                case TipDeistviya.HDDToMemory:
+                case RequestTypes.HDDToMemory:
                     result = String.Format("Жесткий диск {0}, ФБ={1} в ОП ЛА={2}_{3}", FromFile, FileBlockNum, ToTable, ToDescriptor);
                     break;
-                case TipDeistviya.Deistvie:
+                case RequestTypes.Action:
                     result = String.Format("+5 в ЛА={0}_{1}", FromTable, FromDescriptor);
                     break;
             }
@@ -105,18 +105,18 @@ namespace OS
     /// <summary>
     /// Возможное типы заявок
     /// </summary>
-    public enum TipDeistviya
+    public enum RequestTypes
     {
         MemoryToMemory,
         MemoryToHDD,
         HDDToMemory,
-        Deistvie
+        Action
     }
 
     /// <summary>
     /// Возможные состояния заявок
     /// </summary>
-    public enum SostoyanieProcessa
+    public enum ProcessState
     {
         /// <summary>
         /// Не обработана
@@ -143,12 +143,12 @@ namespace OS
     /// <summary>
     /// Интерфейс, описывает все, что может содержать страница основной памяти
     /// </summary>
-    public interface TipObiektaVPamyati {}
+    public interface IMemoryPage {}
 
     /// <summary>
     /// Дескриптор таблицы
     /// </summary>
-    public class TableDescriptor : TipObiektaVPamyati
+    public class TableDescriptor : IMemoryPage
     {
         /// <summary>
         /// Адрес таблицы дескрипторов в памяти 
@@ -169,12 +169,12 @@ namespace OS
     /// <summary>
     /// Дескриптор страницы
     /// </summary>
-    public class PageDescriptor : TipObiektaVPamyati
+    public class PageDescriptor : IMemoryPage
     {
         /// <summary>
         /// Адрес страницы
         /// </summary>
-        public int AddressVOP;
+        public int TargetAddress;
 
         /// <summary>
         /// Бит присутствия в памяти. 0-нет 1-есть
@@ -184,7 +184,7 @@ namespace OS
         /// <summary>
         /// Адрес страницы в файле подкачки
         /// </summary>
-        public int AddresVPamyati;
+        public int AddressInSwap;
 
         /// <summary>
         /// Бит доступа (Для процессов)
@@ -215,14 +215,14 @@ namespace OS
         /// <summary>
         /// Возраст страницы
         /// </summary>
-        public int VozrastStranizi;
+        public int AgeOfPage;
 #endif
     }
 
     /// <summary>
     /// Сама страница с данными
     /// </summary>
-    public class Page : TipObiektaVPamyati
+    public class Page : IMemoryPage
     {
         /// <summary>
         /// Массив байтов страницы
@@ -232,7 +232,7 @@ namespace OS
         /// <summary>
         /// Признак заполненности страницы
         /// </summary>
-        public bool Zanyato = false;
+        public bool Dirty = false;
 
         /// <summary>
         /// Абсолютный адрес в адресном пространстве 
@@ -364,7 +364,7 @@ namespace OS
         /// <summary>
         /// Свободно ли?
         /// </summary>
-        public bool Svobodno;
+        public bool IsFree;
 
         /// <summary>
         /// Адрес следующей ячейки
