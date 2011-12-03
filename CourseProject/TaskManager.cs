@@ -30,9 +30,9 @@ namespace OS
             }
             
             // Демо: пусть для 3х процессов А Б В существуют логические пространства А, АБ, В
-            Processes[0].LogicAreas = new TableDescriptor[] { Memory.Pages[0] as TableDescriptor, Memory.Pages[1] as TableDescriptor };
-            Processes[1].LogicAreas = new TableDescriptor[] { Memory.Pages[1] as TableDescriptor };
-            Processes[2].LogicAreas = new TableDescriptor[] { Memory.Pages[2] as TableDescriptor };
+            Processes[0].LogicAreas = new DescriptorOfTable[] { InternalMemory.Pages[0] as DescriptorOfTable, InternalMemory.Pages[1] as DescriptorOfTable };
+            Processes[1].LogicAreas = new DescriptorOfTable[] { InternalMemory.Pages[1] as DescriptorOfTable };
+            Processes[2].LogicAreas = new DescriptorOfTable[] { InternalMemory.Pages[2] as DescriptorOfTable };
             
             // пусть для каждого процесса существуют следующие заявки
             Processes[0].Requests = new Request[GlobalConsts.SizesOfGroup[0]];
@@ -65,7 +65,7 @@ namespace OS
                 return;
 #if (WS || WSClock)
             //Вставка нужна для того, счтобы с каждой заявкой увеличивать системное время
-            Memory.AgesUp();
+            InternalMemory.AgesUp();
 #endif
 #if (NFU || LRU)
             //обновляем состояние дескрипторов
@@ -85,11 +85,11 @@ namespace OS
             {
                 case RequestTypes.MemoryToMemory:
                     // если есть доступ к источнику и приемнику
-                    if (Memory.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, false) && Memory.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, true))
+                    if (InternalMemory.CheckingMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, false) && InternalMemory.CheckingMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, true))
                     {
                         // считываем и записываем
-                        buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
+                        buffer = InternalMemory.ReadingByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
+                        InternalMemory.WritingByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
@@ -101,10 +101,10 @@ namespace OS
 
                 case RequestTypes.MemoryToHDD:
                     // если есть доступ к источнику и приемнику
-                    if (Memory.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, false) && HDD.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied,false))
+                    if (InternalMemory.CheckingMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, false) && HDD.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied,false))
                     {
                         // считываем и записываем
-                        buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
+                        buffer = InternalMemory.ReadingByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
                         HDD.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
@@ -117,11 +117,11 @@ namespace OS
 
                 case RequestTypes.HDDToMemory:
                     // если есть доступ к источнику и приемнику
-                    if (HDD.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied,true) && Memory.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, true))
+                    if (HDD.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied,true) && InternalMemory.CheckingMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, true))
                     {
                         // считываем и записываем
                         buffer = HDD.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
+                        InternalMemory.WritingByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].ToTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].ToDescriptor, TotalCopied, buffer);
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
                         buffer = HDD.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromFile, Processes[CurrentProcessIndex].Requests[CurrentRequest].FileBlockNum, TotalCopied, buffer);
@@ -132,11 +132,11 @@ namespace OS
                     break;
                 case RequestTypes.Action:
                     // если есть доступ к источнику
-                    if (Memory.CheckMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, false))
+                    if (InternalMemory.CheckingMutex(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, false))
                     {
                         // считываем и записываем измененное
-                        buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
-                        Memory.WriteByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(buffer + 5));
+                        buffer = InternalMemory.ReadingByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);
+                        InternalMemory.WritingByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, (byte)(buffer + 5));
                         TotalCopied++;
 #if IO_TWO_BYTES_PER_STEP
                         buffer = Memory.ReadByte(Processes[CurrentProcessIndex].Requests[CurrentRequest].FromTable, Processes[CurrentProcessIndex].Requests[CurrentRequest].FromDescriptor, TotalCopied, buffer);

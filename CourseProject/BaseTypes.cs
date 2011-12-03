@@ -32,7 +32,7 @@ namespace OS
         /// <summary>
         /// Логические пространства процесса
         /// </summary>
-        public TableDescriptor[] LogicAreas;
+        public DescriptorOfTable[] LogicAreas;
 
         /// <summary>
         /// Контекст процесса для реализации псевдопараллельной работы
@@ -143,22 +143,22 @@ namespace OS
     /// <summary>
     /// Интерфейс, описывает все, что может содержать страница основной памяти
     /// </summary>
-    public interface IMemoryPage {}
+    public interface TypeOfObjectInInternalMemory {}
 
     /// <summary>
     /// Дескриптор таблицы
     /// </summary>
-    public class TableDescriptor : IMemoryPage
+    public class DescriptorOfTable : TypeOfObjectInInternalMemory
     {
         /// <summary>
         /// Адрес таблицы дескрипторов в памяти 
         /// </summary>
-        public int TargetAddress;
+        public int AddressOfSpaceBiginning;
 
         /// <summary>
         /// Размер группы
         /// </summary>
-        public int GroupSize;
+        public int SizeOfSpace;
 
         /// <summary>
         /// Абсолютный адрес в адресном пространстве 
@@ -169,12 +169,12 @@ namespace OS
     /// <summary>
     /// Дескриптор страницы
     /// </summary>
-    public class PageDescriptor : IMemoryPage
+    public class DescriptorOfPages : TypeOfObjectInInternalMemory
     {
         /// <summary>
         /// Адрес страницы
         /// </summary>
-        public int TargetAddress;
+        public int AddressOfSpaceBeginning;
 
         /// <summary>
         /// Бит присутствия в памяти. 0-нет 1-есть
@@ -184,7 +184,7 @@ namespace OS
         /// <summary>
         /// Адрес страницы в файле подкачки
         /// </summary>
-        public int AddressInSwap;
+        public int AddressInSwoppingFile;
 
         /// <summary>
         /// Бит доступа (Для процессов)
@@ -222,7 +222,7 @@ namespace OS
     /// <summary>
     /// Сама страница с данными
     /// </summary>
-    public class Page : IMemoryPage
+    public class Page : TypeOfObjectInInternalMemory
     {
         /// <summary>
         /// Массив байтов страницы
@@ -232,7 +232,7 @@ namespace OS
         /// <summary>
         /// Признак заполненности страницы
         /// </summary>
-        public bool Dirty = false;
+        public bool FilledWithData = false;
 
         /// <summary>
         /// Абсолютный адрес в адресном пространстве 

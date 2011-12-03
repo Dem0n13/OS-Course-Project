@@ -9,12 +9,12 @@ namespace OS
     /// <summary>
     /// Класс основной памяти (ОЗУ)
     /// </summary>
-    public static class Memory
+    public static class InternalMemory
     {
         /// <summary>
         /// Массив страниц, вся основная память
         /// </summary>
-        public static IMemoryPage[] Pages = new IMemoryPage[GlobalConsts.PagesCount + GlobalConsts.CountOfGroup + GlobalConsts.PagesAreaSize];
+        public static TypeOfObjectInInternalMemory[] Pages = new TypeOfObjectInInternalMemory[GlobalConsts.PagesCount + GlobalConsts.CountOfGroup + GlobalConsts.PagesAreaSize];
 
 #if ClockWithTwoArrows
         /// <summary>
@@ -47,41 +47,41 @@ namespace OS
         /// <summary>
         /// Инициализация начальных переменных
         /// </summary>
-        static Memory()
+        static InternalMemory()
         {
             //первый дескриптор таблицы
-            Pages[0] = new TableDescriptor()
+            Pages[0] = new DescriptorOfTable()
             {
-                TargetAddress = 3,
-                GroupSize = GlobalConsts.SizesOfGroup[0],
+                AddressOfSpaceBiginning = 3,
+                SizeOfSpace = GlobalConsts.SizesOfGroup[0],
                 Address = 0
             };
 
             //второй дескриптор таблицы
-            Pages[1] = new TableDescriptor()
+            Pages[1] = new DescriptorOfTable()
             {
-                TargetAddress = (Pages[0] as TableDescriptor).TargetAddress + (Pages[0] as TableDescriptor).GroupSize,
-                GroupSize = GlobalConsts.SizesOfGroup[1],
+                AddressOfSpaceBiginning = (Pages[0] as DescriptorOfTable).AddressOfSpaceBiginning + (Pages[0] as DescriptorOfTable).SizeOfSpace,
+                SizeOfSpace = GlobalConsts.SizesOfGroup[1],
                 Address = 1
             };
 
             //третий дескриптор таблицы
-            Pages[2] = new TableDescriptor()
+            Pages[2] = new DescriptorOfTable()
             {
-                TargetAddress = (Pages[1] as TableDescriptor).TargetAddress + (Pages[1] as TableDescriptor).GroupSize,
-                GroupSize = GlobalConsts.SizesOfGroup[2],
+                AddressOfSpaceBiginning = (Pages[1] as DescriptorOfTable).AddressOfSpaceBiginning + (Pages[1] as DescriptorOfTable).SizeOfSpace,
+                SizeOfSpace = GlobalConsts.SizesOfGroup[2],
                 Address = 2
             };
 
             //инициализируем дескрипторы страниц
             for (int i = GlobalConsts.CountOfGroup; i < GlobalConsts.CountOfGroup + GlobalConsts.PagesCount; i++)
             {
-                Pages[i] = new PageDescriptor()
+                Pages[i] = new DescriptorOfPages()
                 {
                     Present = false,
-                    TargetAddress = -1,
+                    AddressOfSpaceBeginning = -1,
                     Mutex = false,
-                    AddressInSwap = -1,
+                    AddressInSwoppingFile = -1,
                     Address = i
 #if (WS || WSClock)
                     ,AgeOfPage=0
@@ -114,12 +114,12 @@ namespace OS
             // демо пример: первая таблица уже проинициализирована
             for (int i = GlobalConsts.CountOfGroup; i < GlobalConsts.CountOfGroup + GlobalConsts.SizesOfGroup[0]; i++)
             {
-                (Pages[i] as PageDescriptor).Present = true;
-                (Pages[i] as PageDescriptor).TargetAddress = FindFreePage();
+                (Pages[i] as DescriptorOfPages).Present = true;
+                (Pages[i] as DescriptorOfPages).AddressOfSpaceBeginning = SearchingForFreePage();
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
-                    (Pages[(Pages[i] as PageDescriptor).TargetAddress] as Page).Dirty = true;
-                    (Pages[(Pages[i] as PageDescriptor).TargetAddress] as Page).Data[j] = (byte)Program.RND.Next(0, 256);
+                    (Pages[(Pages[i] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).FilledWithData = true;
+                    (Pages[(Pages[i] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).Data[j] = (byte)Program.RND.Next(0, 256);
                 }
             }
         }
@@ -128,10 +128,10 @@ namespace OS
         /// Поиск свободной ячейки ОЗУ
         /// </summary>
         /// <returns>Вызвращает незанятую ячейку, либо -1, если не найдена</returns>
-        private static int FindFreePage()
+        private static int SearchingForFreePage()
         {
             for (int i = GlobalConsts.StartAddressAreaOfPages; i < Pages.Length; i++)
-                if (!(Pages[i] as Page).Dirty)
+                if (!(Pages[i] as Page).FilledWithData)
                     return i;
             return -1;
         }
@@ -143,16 +143,16 @@ namespace OS
         /// <param name="descriptor"></param>
         /// <param name="offset"></param>
         /// <returns></returns>
-        public static bool CheckMutex(int table, int descriptor, int offset, bool write)
+        public static bool CheckingMutex(int table, int descriptor, int offset, bool write)
         {
             // проверка, инициализирована ли страница
-            if (((Pages[(Pages[table] as TableDescriptor).TargetAddress + descriptor] as PageDescriptor).TargetAddress == -1) && ((Pages[(Pages[table] as TableDescriptor).TargetAddress + descriptor] as PageDescriptor).AddressInSwap == -1) && !write)
+            if (((Pages[(Pages[table] as DescriptorOfTable).AddressOfSpaceBiginning + descriptor] as DescriptorOfPages).AddressOfSpaceBeginning == -1) && ((Pages[(Pages[table] as DescriptorOfTable).AddressOfSpaceBiginning + descriptor] as DescriptorOfPages).AddressInSwoppingFile == -1) && !write)
             {
                 return false;
             }
-            int desc_a = (Pages[table] as TableDescriptor).TargetAddress + descriptor; // Получение абсолютного адреса дескриптора
+            int desc_a = (Pages[table] as DescriptorOfTable).AddressOfSpaceBiginning + descriptor; // Получение абсолютного адреса дескриптора
             // проверка, занята ли страница другим процессом
-            if (((Pages[desc_a] as PageDescriptor).Mutex) && (offset == 0))
+            if (((Pages[desc_a] as DescriptorOfPages).Mutex) && (offset == 0))
                 return false;
             return true;
         }
@@ -165,17 +165,17 @@ namespace OS
         /// <param name="offset">Смещение в странице</param>
         /// <param name="data">Буфер для чтения</param>
         /// <returns>true - чтение завершено, false - чтение невозможно</returns>
-        public static byte ReadByte(int table, int descriptor, int offset, byte data)
+        public static byte ReadingByte(int table, int descriptor, int offset, byte data)
         {
             data = 0;
-            int desc_a = (Pages[table] as TableDescriptor).TargetAddress + descriptor; // Получение абсолютного адреса дескриптора
+            int desc_a = (Pages[table] as DescriptorOfTable).AddressOfSpaceBiginning + descriptor; // Получение абсолютного адреса дескриптора
             // проверка, находится ли страница в ФП
-            if (!(Pages[desc_a] as PageDescriptor).Present)
+            if (!(Pages[desc_a] as DescriptorOfPages).Present)
             {
                 // освобождаем место для страницы
-                UnloadToSwap(ReplacementAlgorithm());
+                UnloadToSwap(AlgorithmOfReplacement());
                 // восстанавливаем страницу со swap
-                RestoreFromSwap(desc_a);
+                MovingToSwopingFile(desc_a);
 #if FIFO || FIFO_SC
                 //заносим элемент в очередь
                 if (offset == 0)
@@ -185,13 +185,13 @@ namespace OS
 #endif
             }
             // проверки пройдены, считываем байт
-            (Pages[desc_a] as PageDescriptor).Mutex = true;
+            (Pages[desc_a] as DescriptorOfPages).Mutex = true;
 #if (WSClock || NFU || FIFO_SC || LRU || ClockWithOneArrow || ClockWithTwoArrows)
             (Pages[desc_a] as PageDescriptor).Access = true;
 #endif
-            data = (Pages[(Pages[desc_a] as PageDescriptor).TargetAddress] as Page).Data[offset];
+            data = (Pages[(Pages[desc_a] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).Data[offset];
             if (offset == 3)
-                (Pages[desc_a] as PageDescriptor).Mutex = false;
+                (Pages[desc_a] as DescriptorOfPages).Mutex = false;
             return data;
         }
 
@@ -203,26 +203,26 @@ namespace OS
         /// <param name="offset">Смещение в странице</param>
         /// <param name="data">Буфер на запись</param>
         /// <returns>true - запись завершена, false - запись невозможна</returns>
-        public static void WriteByte(int table, int descriptor, int offset, byte data)
+        public static void WritingByte(int table, int descriptor, int offset, byte data)
         {
-            int desc_a = (Pages[table] as TableDescriptor).TargetAddress + descriptor; // Получение абсолютного адреса дескриптора
+            int desc_a = (Pages[table] as DescriptorOfTable).AddressOfSpaceBiginning + descriptor; // Получение абсолютного адреса дескриптора
             // если нет в памяти
-            if (!(Pages[desc_a] as PageDescriptor).Present)
+            if (!(Pages[desc_a] as DescriptorOfPages).Present)
             {
                 // если нет в ФП, то дескриптор свободный
-                if ((Pages[desc_a] as PageDescriptor).AddressInSwap == -1)
+                if ((Pages[desc_a] as DescriptorOfPages).AddressInSwoppingFile == -1)
                 {
                     // если нет свободной страницы в памяти
-                    if (FindFreePage() == -1)
+                    if (SearchingForFreePage() == -1)
                     {
                         // выгружаем страницу на swap
-                        UnloadToSwap(ReplacementAlgorithm());
-                        (Pages[desc_a] as PageDescriptor).TargetAddress = FindFreePage();
+                        UnloadToSwap(AlgorithmOfReplacement());
+                        (Pages[desc_a] as DescriptorOfPages).AddressOfSpaceBeginning = SearchingForFreePage();
                     }
                     // если есть свободная страница
                     else
                     {
-                        (Pages[desc_a] as PageDescriptor).TargetAddress = FindFreePage(); // присваиваем ссылку дескриптору
+                        (Pages[desc_a] as DescriptorOfPages).AddressOfSpaceBeginning = SearchingForFreePage(); // присваиваем ссылку дескриптору
                     }
 #if FIFO || FIFO_SC
                     //заносим элемент в очередь
@@ -236,9 +236,9 @@ namespace OS
                 else
                 {
                     // освобождаем место для страницы
-                    UnloadToSwap(ReplacementAlgorithm());
+                    UnloadToSwap(AlgorithmOfReplacement());
                     // восстанавливаем страницу со swap
-                    RestoreFromSwap(desc_a);
+                    MovingToSwopingFile(desc_a);
 #if FIFO || FIFO_SC
                     //заносим элемент в очередь
                     if (offset == 0)
@@ -250,16 +250,16 @@ namespace OS
             }
 
             // проверки пройдены, пишем байт
-            (Pages[desc_a] as PageDescriptor).Present = true; // признак того, что страница в памяти
-            (Pages[desc_a] as PageDescriptor).Mutex = true;
+            (Pages[desc_a] as DescriptorOfPages).Present = true; // признак того, что страница в памяти
+            (Pages[desc_a] as DescriptorOfPages).Mutex = true;
 
 #if (WSClock ||NFU || FIFO_SC ||LRU || ClockWithOneArrow || ClockWithTwoArrows)
             (Pages[desc_a] as PageDescriptor).Access = true;
 #endif
-            (Pages[(Pages[desc_a] as PageDescriptor).TargetAddress] as Page).Data[offset] = data;
-            (Pages[(Memory.Pages[desc_a] as PageDescriptor).TargetAddress] as Page).Dirty = true;
+            (Pages[(Pages[desc_a] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).Data[offset] = data;
+            (Pages[(InternalMemory.Pages[desc_a] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).FilledWithData = true;
             if (offset == 3)
-                (Pages[desc_a] as PageDescriptor).Mutex = false;
+                (Pages[desc_a] as DescriptorOfPages).Mutex = false;
         }
 
         /// <summary>
@@ -273,9 +273,9 @@ namespace OS
             if (AbsoluteAddress != -1)
             {
                 //смотрим в дескрипторе адрес на свапе(два случая -1 и x)
-                int AddressInSwap = (Pages[AbsoluteAddress] as PageDescriptor).AddressInSwap;
+                int AddressInSwap = (Pages[AbsoluteAddress] as DescriptorOfPages).AddressInSwoppingFile;
                 //попытка слить на свап несуществующую страницу или которой нет в ОП
-                if ((Pages[AbsoluteAddress] as PageDescriptor).TargetAddress == -1 && (Pages[AbsoluteAddress] as PageDescriptor).Present == false)
+                if ((Pages[AbsoluteAddress] as DescriptorOfPages).AddressOfSpaceBeginning == -1 && (Pages[AbsoluteAddress] as DescriptorOfPages).Present == false)
                 {
                     return -1;
                 }
@@ -292,20 +292,20 @@ namespace OS
                             //копируем данные
                             for (int j = 0; j < GlobalConsts.PageSize; j++)
                             {
-                                HDD.CellsArray[i].Data[j] = (Pages[(Pages[AbsoluteAddress] as PageDescriptor).TargetAddress] as Page).Data[j];
+                                HDD.CellsArray[i].Data[j] = (Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).Data[j];
                             }
                             //обнуляем страницу в памяти
-                            for (int j = 0; j < (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).TargetAddress] as Page).Data.Length; j++)
+                            for (int j = 0; j < (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).Data.Length; j++)
                             {
-                                (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).TargetAddress] as Page).Data[j] = 0;
+                                (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).Data[j] = 0;
                             }
                             //скидываем адрес в массиве страниц в ОП
-                            (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).TargetAddress] as Page).Dirty = false;
-                            (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).Address] as PageDescriptor).TargetAddress = -1;
+                            (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).FilledWithData = false;
+                            (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).Address] as DescriptorOfPages).AddressOfSpaceBeginning = -1;
                             HDD.CellsArray[i].IsFree = false;
                             //ставим бит присутствия в 0
-                            (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).Address] as PageDescriptor).Present = false;
-                            (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).Address] as PageDescriptor).AddressInSwap = i;
+                            (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).Address] as DescriptorOfPages).Present = false;
+                            (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).Address] as DescriptorOfPages).AddressInSwoppingFile = i;
                             //выходим с адресом, куда записали
                             return i;
                         }
@@ -314,23 +314,23 @@ namespace OS
                 //если страница есть на swap'e
                 else
                 {
-                    (Pages[AbsoluteAddress] as PageDescriptor).Present = false;
+                    (Pages[AbsoluteAddress] as DescriptorOfPages).Present = false;
                     //копируем данные
                     for (int j = 0; j < GlobalConsts.PageSize; j++)
                     {
-                        HDD.CellsArray[AddressInSwap].Data[j] = (Pages[(Pages[AbsoluteAddress] as PageDescriptor).TargetAddress] as Page).Data[j];
+                        HDD.CellsArray[AddressInSwap].Data[j] = (Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).Data[j];
                     }
                     //обнуляем страницу в памяти
-                    for (int j = 0; j < (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).TargetAddress] as Page).Data.Length; j++)
+                    for (int j = 0; j < (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).Data.Length; j++)
                     {
-                        (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).TargetAddress] as Page).Data[j] = 0;
+                        (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).Data[j] = 0;
                     }
                     //скидываем адрес в массиве страниц в ОП
-                    (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).TargetAddress] as Page).Dirty = false;
-                    (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).Address] as PageDescriptor).TargetAddress = -1;
+                    (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).AddressOfSpaceBeginning] as Page).FilledWithData = false;
+                    (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).Address] as DescriptorOfPages).AddressOfSpaceBeginning = -1;
                     //ставим бит присутствия в 0
-                    (Memory.Pages[(Pages[AbsoluteAddress] as PageDescriptor).Address] as PageDescriptor).Present = false;
-                    return (Pages[AbsoluteAddress] as PageDescriptor).AddressInSwap;
+                    (InternalMemory.Pages[(Pages[AbsoluteAddress] as DescriptorOfPages).Address] as DescriptorOfPages).Present = false;
+                    return (Pages[AbsoluteAddress] as DescriptorOfPages).AddressInSwoppingFile;
                 }
             }
             return -1;
@@ -341,25 +341,25 @@ namespace OS
         /// </summary>
         /// <param name="AbsoluteAddress">абсолютный адрес дескриптор страницы</param>
         /// <returns>возвращает -1 в случае неудачи и адрес страницы в ОП, куда записали</returns>
-        private static int RestoreFromSwap(int AbsoluteAddress)
+        private static int MovingToSwopingFile(int AbsoluteAddress)
         {
             //проверяем, на валидность
             if (AbsoluteAddress != -1)
             {
                 //ищем свободное место в ОП
-                int WhereIs = FindFreePage();
+                int WhereIs = SearchingForFreePage();
                 //если все заебись
-                if (WhereIs != -1 && (Pages[AbsoluteAddress] as PageDescriptor).AddressInSwap != -1 && (Pages[AbsoluteAddress] as PageDescriptor).Present == false)
+                if (WhereIs != -1 && (Pages[AbsoluteAddress] as DescriptorOfPages).AddressInSwoppingFile != -1 && (Pages[AbsoluteAddress] as DescriptorOfPages).Present == false)
                 {
                     //копируем страницу в ОП
                     for (int i = 0; i < GlobalConsts.PageSize; i++)
                     {
-                        (Pages[WhereIs] as Page).Data[i] = HDD.CellsArray[(Pages[AbsoluteAddress] as PageDescriptor).AddressInSwap].Data[i];
+                        (Pages[WhereIs] as Page).Data[i] = HDD.CellsArray[(Pages[AbsoluteAddress] as DescriptorOfPages).AddressInSwoppingFile].Data[i];
                     }
                     //выставляем параметры присутствия в дескрипторе и прочее
-                    (Pages[AbsoluteAddress] as PageDescriptor).Present = true;
-                    (Pages[AbsoluteAddress] as PageDescriptor).TargetAddress = WhereIs;
-                    (Pages[WhereIs] as Page).Dirty = true;
+                    (Pages[AbsoluteAddress] as DescriptorOfPages).Present = true;
+                    (Pages[AbsoluteAddress] as DescriptorOfPages).AddressOfSpaceBeginning = WhereIs;
+                    (Pages[WhereIs] as Page).FilledWithData = true;
                     return WhereIs;
                 }
             }
@@ -473,7 +473,7 @@ namespace OS
         /// Поиск замещаемого элемента по алгоритму WS
         /// </summary>
         /// <returns>Абсолютный адрес дескриптора для замещения</returns>
-        public static int ReplacementAlgorithm()
+        public static int AlgorithmOfReplacement()
         {
             //определяем возраст для каждой страницы
             int delta = 0;
@@ -486,12 +486,12 @@ namespace OS
                 for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
                 {
                     //удовлетворяет ли страница общим критериям?
-                    if ((Pages[i] as PageDescriptor).AgeOfPage >= tau  && (Pages[i] as PageDescriptor).Present == true && (Pages[i] as PageDescriptor).Mutex==false)
+                    if ((Pages[i] as DescriptorOfPages).AgeOfPage >= tau  && (Pages[i] as DescriptorOfPages).Present == true && (Pages[i] as DescriptorOfPages).Mutex==false)
                     {
                         //больше ли самой старой?
-                        if ((Pages[i] as PageDescriptor).AgeOfPage > MaxAge)
+                        if ((Pages[i] as DescriptorOfPages).AgeOfPage > MaxAge)
                         {
-                            MaxAge = (Pages[i] as PageDescriptor).AgeOfPage;
+                            MaxAge = (Pages[i] as DescriptorOfPages).AgeOfPage;
                             AddressMaxPage = i;
                             IsFinded = true;
                         }
@@ -501,7 +501,7 @@ namespace OS
                 if (IsFinded == true)
                 {
                     IsFinded = false;
-                    (Pages[AddressMaxPage] as PageDescriptor).AgeOfPage = 0;
+                    (Pages[AddressMaxPage] as DescriptorOfPages).AgeOfPage = 0;
                     tau += delta;
                     return AddressMaxPage;
                 }
@@ -520,16 +520,16 @@ namespace OS
             for (int i = GlobalConsts.StartAddressDescriptionPage; i < GlobalConsts.StartAddressAreaOfPages; i++)
             {
                 //если занято, возраст = 0
-                if ((Pages[i] as PageDescriptor).Mutex == true  && (Pages[i] as PageDescriptor).Present == true)
+                if ((Pages[i] as DescriptorOfPages).Mutex == true  && (Pages[i] as DescriptorOfPages).Present == true)
                 {
-                    (Pages[i] as PageDescriptor).AgeOfPage = 0;
+                    (Pages[i] as DescriptorOfPages).AgeOfPage = 0;
                 }
                 //иначе если не занято то ++
                 else
                 {
-                    if ((Pages[i] as PageDescriptor).Present == true  && (Pages[i] as PageDescriptor).Mutex == false)
+                    if ((Pages[i] as DescriptorOfPages).Present == true  && (Pages[i] as DescriptorOfPages).Mutex == false)
                     {
-                        (Pages[i] as PageDescriptor).AgeOfPage++;
+                        (Pages[i] as DescriptorOfPages).AgeOfPage++;
                     }
                 }
             }

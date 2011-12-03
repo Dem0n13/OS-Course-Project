@@ -51,8 +51,8 @@ namespace OS
             for (int i = 0; i < GlobalConsts.CountOfGroup; i++)
             {
                 //расставляем адреса в первой и третьей колонке колонке
-                DGDescriptionTable.Rows[i].Cells[0].Value = (Memory.Pages[i] as TableDescriptor).Address;
-                DGDescriptionTable.Rows[i].Cells[2].Value = (Memory.Pages[i] as TableDescriptor).TargetAddress.ToString();
+                DGDescriptionTable.Rows[i].Cells[0].Value = (InternalMemory.Pages[i] as DescriptorOfTable).Address;
+                DGDescriptionTable.Rows[i].Cells[2].Value = (InternalMemory.Pages[i] as DescriptorOfTable).AddressOfSpaceBiginning.ToString();
 
                 // расскрашиваем группы
                 //DGDescriptionTable.Rows[i].Cells[1].Style.BackColor = System.Drawing.Color.FromArgb(Program.RND.Next(100, 255), Program.RND.Next(100, 255), Program.RND.Next(100, 255));
@@ -61,8 +61,8 @@ namespace OS
             
             // Расстановка владельцев у таблиц дескрипторов
             for (int i = 0; i < GlobalConsts.ProcessesCount; i++)
-                foreach (TableDescriptor td in TaskManager.Processes[i].LogicAreas)
-                    DGDescriptionTable.Rows[Array.IndexOf(Memory.Pages, td)].Cells[1].Value += TaskManager.Processes[i].ID + ", ";
+                foreach (DescriptorOfTable td in TaskManager.Processes[i].LogicAreas)
+                    DGDescriptionTable.Rows[Array.IndexOf(InternalMemory.Pages, td)].Cells[1].Value += TaskManager.Processes[i].ID + ", ";
             
             //удаляем лишние символы ", " (запятая пробел)
             for (int i = 0; i < DGDescriptionTable.RowCount; i++)
@@ -118,7 +118,7 @@ namespace OS
                 {
                     DGDescriptionPages.Rows[j].Cells[0].Style.BackColor = DGDescriptionTable.Rows[i].Cells[1].Style.BackColor;
                     DGDescriptionPages.Rows[j].Cells[4].Style.BackColor = DGDescriptionTable.Rows[i].Cells[1].Style.BackColor;
-                    DGDescriptionPages.Rows[j].Cells[0].Value = (Memory.Pages[j+GlobalConsts.CountOfGroup] as PageDescriptor).Address;
+                    DGDescriptionPages.Rows[j].Cells[0].Value = (InternalMemory.Pages[j+GlobalConsts.CountOfGroup] as DescriptorOfPages).Address;
                 }
                 local_buf += GlobalConsts.SizesOfGroup[i];
             }
@@ -453,14 +453,14 @@ namespace OS
             //заполняем таблицу дескрипторы страниц и раскрашиваем
             for (int i = 0; i < GlobalConsts.StartAddressAreaOfPages - GlobalConsts.StartAddressDescriptionPage; i++)
             {
-                DGDescriptionPages.Rows[i].Cells[1].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Present;
+                DGDescriptionPages.Rows[i].Cells[1].Value = (InternalMemory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorOfPages).Present;
                 //DGDescriptionPages[1, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Present == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
-                DGDescriptionPages.Rows[i].Cells[2].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Mutex;
+                DGDescriptionPages.Rows[i].Cells[2].Value = (InternalMemory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorOfPages).Mutex;
                 //DGDescriptionPages[2, i].Style.BackColor = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Mutex == true ? System.Drawing.Color.LightGreen : System.Drawing.Color.LightCoral;
-                DGDescriptionPages.Rows[i].Cells[3].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).AddressInSwap;
-                DGDescriptionPages.Rows[i].Cells[4].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).TargetAddress;
+                DGDescriptionPages.Rows[i].Cells[3].Value = (InternalMemory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorOfPages).AddressInSwoppingFile;
+                DGDescriptionPages.Rows[i].Cells[4].Value = (InternalMemory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorOfPages).AddressOfSpaceBeginning;
 #if (WS || WSClock)
-                DGDescriptionPages.Rows[i].Cells[5].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).AgeOfPage;
+                DGDescriptionPages.Rows[i].Cells[5].Value = (InternalMemory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as DescriptorOfPages).AgeOfPage;
 #endif
 #if (FIFO_SC || ClockWithOneArrow || ClockWithTwoArrows)
                 DGDescriptionPages.Rows[i].Cells[5].Value = (Memory.Pages[i + GlobalConsts.StartAddressDescriptionPage] as PageDescriptor).Access;
@@ -480,7 +480,7 @@ namespace OS
             {
                 for (int j = 0; j < GlobalConsts.PageSize; j++)
                 {
-                    DGPagesInMemory.Rows[i].Cells[j+1].Value = (Memory.Pages[i + GlobalConsts.StartAddressAreaOfPages] as  Page).Data[j];
+                    DGPagesInMemory.Rows[i].Cells[j+1].Value = (InternalMemory.Pages[i + GlobalConsts.StartAddressAreaOfPages] as  Page).Data[j];
                 }
             }
         }
