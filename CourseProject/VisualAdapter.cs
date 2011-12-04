@@ -42,7 +42,7 @@ namespace OS
             // Дескрипторы таблиц
             DGDescriptionTable.ColumnCount=3;
             DGDescriptionTable.Columns[0].HeaderText = "Адрес";
-            DGDescriptionTable.Columns[1].HeaderText = "Владельцы";
+            DGDescriptionTable.Columns[1].HeaderText = "Процессы";
             DGDescriptionTable.Columns[2].HeaderText = "Ссылка";
             DGDescriptionTable.RowCount = GlobalConsts.SizesOfGroup.Length;
             for (int i = 0; i < GlobalConsts.CountOfGroup; i++)
@@ -84,9 +84,9 @@ namespace OS
             DGDescriptionPages.Columns[0].Width = 50;
             DGDescriptionPages.Columns[1].HeaderText = "Present";
             DGDescriptionPages.Columns[1].Width = 50;
-            DGDescriptionPages.Columns[2].HeaderText = "Мьютекс";
+            DGDescriptionPages.Columns[2].HeaderText = "Mutex";
             DGDescriptionPages.Columns[2].Width = 50;
-            DGDescriptionPages.Columns[3].HeaderText = "Адр. в ФП";
+            DGDescriptionPages.Columns[3].HeaderText = "Файл подкачки";
             DGDescriptionPages.Columns[3].Width = 50;
             DGDescriptionPages.Columns[4].HeaderText = "Ссылка";
             DGDescriptionPages.Columns[4].Width = 50;
@@ -334,7 +334,7 @@ namespace OS
                 EditorPanel.Enabled = false;
             }
 #endif
-            LabelProc.Text = "Процесс на выполнение: " + (TaskManager.CurrentProcessIndex == -1 ? "Нет" : TaskManager.Processes[TaskManager.CurrentProcessIndex].ID);
+            LabelProc.Text = "Процесс: " + (TaskManager.CurrentProcessIndex == -1 ? "Нет" : TaskManager.Processes[TaskManager.CurrentProcessIndex].ID);
         }
 
 #if UI_REQUEST_EDITOR_ON_MAIN_FORM
