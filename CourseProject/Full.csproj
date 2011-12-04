@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OS</RootNamespace>
     <AssemblyName>Course project OS</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -40,7 +40,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;FS_WITH_INDEX_ENUM TM_RR NFU UI_REQUEST_EDITOR_ON_EDITOR_FORM IO_TWO_BYTES_PER_STEP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;FS_WITH_INDEX_SEQ TM_RR NFU UI_REQUEST_EDITOR_ON_EDITOR_FORM IO_TWO_BYTES_PER_STEP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
