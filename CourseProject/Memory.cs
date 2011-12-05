@@ -173,9 +173,9 @@ namespace OS
             if (!(Pages[desc_a] as DescriptorOfPages).Present)
             {
                 // освобождаем место для страницы
-                UnloadToSwap(AlgorithmOfReplacement());
+                MovingToSwopingFile(AlgorithmOfReplacement());
                 // восстанавливаем страницу со swap
-                MovingToSwopingFile(desc_a);
+                RestoringFromSwopingFile(desc_a);
 #if FIFO || FIFO_SC
                 //заносим элемент в очередь
                 if (offset == 0)
@@ -216,7 +216,7 @@ namespace OS
                     if (SearchingForFreePage() == -1)
                     {
                         // выгружаем страницу на swap
-                        UnloadToSwap(AlgorithmOfReplacement());
+                        MovingToSwopingFile(AlgorithmOfReplacement());
                         (Pages[desc_a] as DescriptorOfPages).AddressOfSpaceBeginning = SearchingForFreePage();
                     }
                     // если есть свободная страница
@@ -236,9 +236,9 @@ namespace OS
                 else
                 {
                     // освобождаем место для страницы
-                    UnloadToSwap(AlgorithmOfReplacement());
+                    MovingToSwopingFile(AlgorithmOfReplacement());
                     // восстанавливаем страницу со swap
-                    MovingToSwopingFile(desc_a);
+                    RestoringFromSwopingFile(desc_a);
 #if FIFO || FIFO_SC
                     //заносим элемент в очередь
                     if (offset == 0)
@@ -267,7 +267,7 @@ namespace OS
         /// </summary>
         /// <param name="UPageDescriptor">Абсолютный адрес дескриптора</param>
         /// <returns>Адрес, куда будет перемещает страница в ФП(-1 - неудача)</returns>
-        private static int UnloadToSwap(int AbsoluteAddress)
+        private static int MovingToSwopingFile(int AbsoluteAddress)
         {
             //проверяем, на валидность
             if (AbsoluteAddress != -1)
@@ -341,7 +341,7 @@ namespace OS
         /// </summary>
         /// <param name="AbsoluteAddress">абсолютный адрес дескриптор страницы</param>
         /// <returns>возвращает -1 в случае неудачи и адрес страницы в ОП, куда записали</returns>
-        private static int MovingToSwopingFile(int AbsoluteAddress)
+        private static int RestoringFromSwopingFile(int AbsoluteAddress)
         {
             //проверяем, на валидность
             if (AbsoluteAddress != -1)
