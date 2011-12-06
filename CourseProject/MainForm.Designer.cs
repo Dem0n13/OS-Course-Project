@@ -315,7 +315,7 @@
             this.Controls.Add(this.CellsArray);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Курсовой проект";
+            this.Text = "Курсовой проект Алютин";
             ((System.ComponentModel.ISupportInitialize)(this.DGRequsts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PagesInMemory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionPages)).EndInit();
