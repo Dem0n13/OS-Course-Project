@@ -305,7 +305,7 @@
             this.Controls.Add(this.CellsArray);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Зиновкина";
+            this.Text = "Соловьев, курсовой";
             ((System.ComponentModel.ISupportInitialize)(this.DGRequsts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PagesInMemory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionPages)).EndInit();
