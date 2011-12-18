@@ -40,7 +40,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;FS_WITH_INDEX_ENUM TM_RR LRU UI_REQUEST_EDITOR_ON_EDITOR_FORM</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;FS_WITH_INDEX_SEQ TM_RR WS UI_REQUEST_EDITOR_ON_EDITOR_FORM</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>

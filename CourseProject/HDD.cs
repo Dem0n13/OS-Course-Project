@@ -56,7 +56,7 @@ namespace OS
                 Catalog[0].FileSize++;
                 CellsArray[temp].IsFree = false;
                 Catalog[0].Indexes.Add(temp);
-                Catalog[0].FileSize++;
+                //Catalog[0].FileSize++;
             }
             Catalog[0].IsOpen = false;
 

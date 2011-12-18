@@ -67,18 +67,20 @@
             this.DGRequsts.AllowUserToDeleteRows = false;
             this.DGRequsts.AllowUserToResizeColumns = false;
             this.DGRequsts.AllowUserToResizeRows = false;
+            this.DGRequsts.BackgroundColor = System.Drawing.SystemColors.Control;
             this.DGRequsts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DGRequsts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Процесс,
             this.Заявка,
             this.Column13});
-            this.DGRequsts.Location = new System.Drawing.Point(3, 21);
+            this.DGRequsts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DGRequsts.Location = new System.Drawing.Point(3, 428);
             this.DGRequsts.MultiSelect = false;
             this.DGRequsts.Name = "DGRequsts";
             this.DGRequsts.ReadOnly = true;
             this.DGRequsts.RowHeadersVisible = false;
             this.DGRequsts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DGRequsts.Size = new System.Drawing.Size(393, 318);
+            this.DGRequsts.Size = new System.Drawing.Size(394, 341);
             this.DGRequsts.TabIndex = 5;
             this.DGRequsts.SelectionChanged += new System.EventHandler(this.DGRequsts_SelectionChanged);
             // 
@@ -89,7 +91,7 @@
             this.Процесс.Name = "Процесс";
             this.Процесс.ReadOnly = true;
             this.Процесс.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Процесс.Width = 71;
+            this.Процесс.Width = 70;
             // 
             // Заявка
             // 
@@ -106,10 +108,11 @@
             this.Column13.Name = "Column13";
             this.Column13.ReadOnly = true;
             this.Column13.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Column13.Width = 42;
+            this.Column13.Width = 40;
             // 
             // PagesInMemory
             // 
+            this.PagesInMemory.BackgroundColor = System.Drawing.SystemColors.Control;
             this.PagesInMemory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.PagesInMemory.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column8,
@@ -119,10 +122,10 @@
             this.Column12});
             this.PagesInMemory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PagesInMemory.GridColor = System.Drawing.Color.DimGray;
-            this.PagesInMemory.Location = new System.Drawing.Point(989, 403);
+            this.PagesInMemory.Location = new System.Drawing.Point(923, 22);
             this.PagesInMemory.Name = "PagesInMemory";
             this.PagesInMemory.RowHeadersVisible = false;
-            this.PagesInMemory.Size = new System.Drawing.Size(394, 321);
+            this.PagesInMemory.Size = new System.Drawing.Size(414, 341);
             this.PagesInMemory.TabIndex = 2;
             // 
             // Column8
@@ -165,15 +168,17 @@
             this.DescriptionPages.AllowUserToDeleteRows = false;
             this.DescriptionPages.AllowUserToResizeColumns = false;
             this.DescriptionPages.AllowUserToResizeRows = false;
+            this.DescriptionPages.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.DescriptionPages.BackgroundColor = System.Drawing.SystemColors.Control;
             this.DescriptionPages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DescriptionPages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DescriptionPages.GridColor = System.Drawing.Color.DimGray;
-            this.DescriptionPages.Location = new System.Drawing.Point(403, 403);
+            this.DescriptionPages.Location = new System.Drawing.Point(403, 22);
             this.DescriptionPages.MultiSelect = false;
             this.DescriptionPages.Name = "DescriptionPages";
             this.DescriptionPages.RowHeadersVisible = false;
             this.DescriptionPages.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.White;
-            this.DescriptionPages.Size = new System.Drawing.Size(580, 321);
+            this.DescriptionPages.Size = new System.Drawing.Size(514, 341);
             this.DescriptionPages.TabIndex = 1;
             // 
             // DescriptionTable
@@ -182,38 +187,44 @@
             this.DescriptionTable.AllowUserToDeleteRows = false;
             this.DescriptionTable.AllowUserToResizeColumns = false;
             this.DescriptionTable.AllowUserToResizeRows = false;
+            this.DescriptionTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
+            this.DescriptionTable.BackgroundColor = System.Drawing.SystemColors.Control;
             this.DescriptionTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DescriptionTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DescriptionTable.GridColor = System.Drawing.Color.DimGray;
-            this.DescriptionTable.Location = new System.Drawing.Point(3, 403);
+            this.DescriptionTable.Location = new System.Drawing.Point(3, 22);
             this.DescriptionTable.Name = "DescriptionTable";
             this.DescriptionTable.RowHeadersVisible = false;
-            this.DescriptionTable.Size = new System.Drawing.Size(394, 321);
+            this.DescriptionTable.Size = new System.Drawing.Size(394, 341);
             this.DescriptionTable.TabIndex = 0;
             // 
             // Catalog
             // 
+            this.Catalog.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.Catalog.BackgroundColor = System.Drawing.SystemColors.Control;
             this.Catalog.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.Catalog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Catalog.Location = new System.Drawing.Point(403, 21);
+            this.Catalog.Location = new System.Drawing.Point(403, 428);
             this.Catalog.Name = "Catalog";
-            this.Catalog.Size = new System.Drawing.Size(580, 320);
+            this.Catalog.Size = new System.Drawing.Size(514, 341);
             this.Catalog.TabIndex = 0;
             // 
             // CellsArray
             // 
+            this.CellsArray.BackgroundColor = System.Drawing.SystemColors.Control;
             this.CellsArray.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.CellsArray.Location = new System.Drawing.Point(989, 21);
+            this.CellsArray.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CellsArray.Location = new System.Drawing.Point(923, 428);
             this.CellsArray.Name = "CellsArray";
-            this.CellsArray.Size = new System.Drawing.Size(393, 318);
+            this.CellsArray.Size = new System.Drawing.Size(414, 341);
             this.CellsArray.TabIndex = 4;
             // 
             // RunStepBtn
             // 
             this.RunStepBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.RunStepBtn.Location = new System.Drawing.Point(3, 347);
+            this.RunStepBtn.Location = new System.Drawing.Point(923, 369);
             this.RunStepBtn.Name = "RunStepBtn";
-            this.RunStepBtn.Size = new System.Drawing.Size(394, 32);
+            this.RunStepBtn.Size = new System.Drawing.Size(414, 34);
             this.RunStepBtn.TabIndex = 0;
             this.RunStepBtn.Text = "Следующая заявка";
             this.RunStepBtn.UseVisualStyleBackColor = true;
@@ -221,9 +232,9 @@
             // 
             // EditRequestBtn
             // 
-            this.EditRequestBtn.Location = new System.Drawing.Point(1382, 253);
+            this.EditRequestBtn.Location = new System.Drawing.Point(1382, 269);
             this.EditRequestBtn.Name = "EditRequestBtn";
-            this.EditRequestBtn.Size = new System.Drawing.Size(132, 41);
+            this.EditRequestBtn.Size = new System.Drawing.Size(132, 44);
             this.EditRequestBtn.TabIndex = 1;
             this.EditRequestBtn.Text = "Редактировать заявку";
             this.EditRequestBtn.UseVisualStyleBackColor = true;
@@ -232,54 +243,54 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Location = new System.Drawing.Point(3, 406);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(110, 16);
+            this.label1.Size = new System.Drawing.Size(117, 17);
             this.label1.TabIndex = 6;
             this.label1.Text = "Заявки процессов";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 382);
+            this.label2.Location = new System.Drawing.Point(3, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(128, 16);
+            this.label2.Size = new System.Drawing.Size(133, 17);
             this.label2.TabIndex = 7;
             this.label2.Text = "Дескрипторы таблиц";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(403, 382);
+            this.label3.Location = new System.Drawing.Point(403, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(134, 16);
+            this.label3.Size = new System.Drawing.Size(139, 17);
             this.label3.TabIndex = 8;
             this.label3.Text = "Дескрипторы страниц";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(989, 382);
+            this.label4.Location = new System.Drawing.Point(923, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(108, 16);
+            this.label4.Size = new System.Drawing.Size(113, 17);
             this.label4.TabIndex = 9;
             this.label4.Text = "Основная память";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(403, 0);
+            this.label5.Location = new System.Drawing.Point(403, 406);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(54, 16);
+            this.label5.Size = new System.Drawing.Size(55, 17);
             this.label5.TabIndex = 10;
             this.label5.Text = "Каталог";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(989, 0);
+            this.label6.Location = new System.Drawing.Point(923, 406);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(103, 16);
+            this.label6.Size = new System.Drawing.Size(109, 17);
             this.label6.TabIndex = 11;
             this.label6.Text = "Файловые блоки";
             // 
@@ -289,9 +300,9 @@
             this.tableLayoutPanel1.SetColumnSpan(this.label7, 2);
             this.label7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label7.Font = new System.Drawing.Font("Arial Unicode MS", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label7.Location = new System.Drawing.Point(403, 344);
+            this.label7.Location = new System.Drawing.Point(3, 366);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(980, 38);
+            this.label7.Size = new System.Drawing.Size(914, 40);
             this.label7.TabIndex = 12;
             this.label7.Text = "label7";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -301,45 +312,45 @@
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 400F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 400F));
-            this.tableLayoutPanel1.Controls.Add(this.RunStepBtn, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label6, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.DescriptionTable, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.label2, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.CellsArray, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.DescriptionPages, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.label3, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.label7, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.DGRequsts, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label5, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.Catalog, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.PagesInMemory, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.label4, 2, 3);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 420F));
+            this.tableLayoutPanel1.Controls.Add(this.CellsArray, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.label4, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.PagesInMemory, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label6, 2, 3);
+            this.tableLayoutPanel1.Controls.Add(this.Catalog, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.label5, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.DescriptionPages, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.DGRequsts, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.DescriptionTable, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label7, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.RunStepBtn, 2, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 5;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 19F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 19F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1386, 727);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1340, 772);
             this.tableLayoutPanel1.TabIndex = 13;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1386, 727);
+            this.ClientSize = new System.Drawing.Size(1340, 772);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.EditRequestBtn);
-            this.Font = new System.Drawing.Font("Arial Unicode MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Курсовая работа Софиянчука Егора";
+            this.Text = "Курсовая работа Груздова Алексея";
             ((System.ComponentModel.ISupportInitialize)(this.DGRequsts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PagesInMemory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionPages)).EndInit();
