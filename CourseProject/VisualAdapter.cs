@@ -104,7 +104,7 @@ namespace OS
 #endif
 #if (WSClock || NFU || LRU)
 
-            DGDescriptionPages.Columns[6].HeaderText = "А";
+            DGDescriptionPages.Columns[6].HeaderText = "Аccess";
             DGDescriptionPages.Columns[6].Width = 50;
 #endif
 
@@ -125,6 +125,12 @@ namespace OS
             for (int i = 0; i < GlobalConsts.PagesAreaSize; i++)
             {
                 DGPagesInMemory.Rows[i].Cells[0].Value = i + GlobalConsts.StartAddressAreaOfPages;
+            }
+
+            // автосайз столбцов
+            foreach (DataGridViewColumn column in DGDescriptionPages.Columns)
+            {
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             }
 
             #endregion
@@ -261,6 +267,16 @@ namespace OS
 #endif
             #endregion
 
+            // автосайз столбцов
+            foreach (DataGridViewColumn column in DGCatalog.Columns)
+            {
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            }
+
+            foreach (DataGridViewColumn column in DGCellsArray.Columns)
+            {
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            }
             #endregion
 
             // первое обновление

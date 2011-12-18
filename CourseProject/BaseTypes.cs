@@ -84,16 +84,16 @@ namespace OS
             switch (Type)
             {
                 case RequestTypes.MemoryToMemory:
-                    result = String.Format("Память>Память (ЛА={0}_{1} > ЛА={2}_{3})", FromTable, FromDescriptor, ToTable, ToDescriptor);
+                    result = String.Format("Копирование (ЛА={0}_{1} > ЛА={2}_{3})", FromTable, FromDescriptor, ToTable, ToDescriptor);
                     break;
                 case RequestTypes.MemoryToHDD:
-                    result = String.Format("Память>ВЗУ (ЛА={0}_{1} > {2}, ФБ={3})", FromTable, FromDescriptor, ToFile, FileBlockNum);
+                    result = String.Format("Запись на ВЗУ (ЛА={0}_{1} > {2}, ФБ={3})", FromTable, FromDescriptor, ToFile, FileBlockNum);
                     break;
                 case RequestTypes.HDDToMemory:
-                    result = String.Format("ВЗУ>Память ({0}, ФБ={1} > ЛА={2}_{3})", FromFile, FileBlockNum, ToTable, ToDescriptor);
+                    result = String.Format("Чтение с ВЗУ ({0}, ФБ={1} > ЛА={2}_{3})", FromFile, FileBlockNum, ToTable, ToDescriptor);
                     break;
                 case RequestTypes.Action:
-                    result = String.Format("Обработка данных (ЛА={0}_{1})", FromTable, FromDescriptor);
+                    result = String.Format("Обработка данных (-1) (ЛА={0}_{1})", FromTable, FromDescriptor);
                     break;
             }
             return result;

@@ -56,11 +56,12 @@ namespace OS
                 Catalog[0].FileSize++;
                 CellsArray[temp].IsFree = false;
                 Catalog[0].Indexes.Add(temp);
+                Catalog[0].FileSize++;
             }
             Catalog[0].IsOpen = false;
 
             //инициалицируем File2.f
-            Catalog[1].Filename = "File2.f";
+            Catalog[1].Filename = "Result.f";
 
 #endif
             #endregion;
