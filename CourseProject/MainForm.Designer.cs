@@ -87,7 +87,7 @@
             this.Процесс.Name = "Процесс";
             this.Процесс.ReadOnly = true;
             this.Процесс.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Процесс.Width = 79;
+            this.Процесс.Width = 62;
             // 
             // Заявка
             // 
@@ -104,7 +104,7 @@
             this.Column13.Name = "Column13";
             this.Column13.ReadOnly = true;
             this.Column13.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Column13.Width = 101;
+            this.Column13.Width = 80;
             // 
             // PagesInMemory
             // 
@@ -133,28 +133,28 @@
             this.Column9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column9.HeaderText = "0";
             this.Column9.Name = "Column9";
-            this.Column9.Width = 41;
+            this.Column9.Width = 38;
             // 
             // Column10
             // 
             this.Column10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column10.HeaderText = "1";
             this.Column10.Name = "Column10";
-            this.Column10.Width = 41;
+            this.Column10.Width = 38;
             // 
             // Column11
             // 
             this.Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column11.HeaderText = "2";
             this.Column11.Name = "Column11";
-            this.Column11.Width = 41;
+            this.Column11.Width = 38;
             // 
             // Column12
             // 
             this.Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column12.HeaderText = "3";
             this.Column12.Name = "Column12";
-            this.Column12.Width = 41;
+            this.Column12.Width = 38;
             // 
             // DescriptionPages
             // 
@@ -314,7 +314,7 @@
             this.Controls.Add(this.CellsArray);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Константин Рогацевич";
+            this.Text = "Константин Рогацевич (35 вариант)";
             ((System.ComponentModel.ISupportInitialize)(this.DGRequsts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PagesInMemory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionPages)).EndInit();
