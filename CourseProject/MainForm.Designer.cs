@@ -87,7 +87,7 @@
             this.Процесс.Name = "Процесс";
             this.Процесс.ReadOnly = true;
             this.Процесс.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Процесс.Width = 62;
+            this.Процесс.Width = 79;
             // 
             // Заявка
             // 
@@ -104,7 +104,7 @@
             this.Column13.Name = "Column13";
             this.Column13.ReadOnly = true;
             this.Column13.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Column13.Width = 80;
+            this.Column13.Width = 101;
             // 
             // PagesInMemory
             // 
@@ -116,7 +116,7 @@
             this.Column11,
             this.Column12});
             this.PagesInMemory.GridColor = System.Drawing.Color.DimGray;
-            this.PagesInMemory.Location = new System.Drawing.Point(583, 318);
+            this.PagesInMemory.Location = new System.Drawing.Point(583, 317);
             this.PagesInMemory.Name = "PagesInMemory";
             this.PagesInMemory.RowHeadersVisible = false;
             this.PagesInMemory.Size = new System.Drawing.Size(219, 262);
@@ -133,28 +133,28 @@
             this.Column9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column9.HeaderText = "0";
             this.Column9.Name = "Column9";
-            this.Column9.Width = 38;
+            this.Column9.Width = 41;
             // 
             // Column10
             // 
             this.Column10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column10.HeaderText = "1";
             this.Column10.Name = "Column10";
-            this.Column10.Width = 38;
+            this.Column10.Width = 41;
             // 
             // Column11
             // 
             this.Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column11.HeaderText = "2";
             this.Column11.Name = "Column11";
-            this.Column11.Width = 38;
+            this.Column11.Width = 41;
             // 
             // Column12
             // 
             this.Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Column12.HeaderText = "3";
             this.Column12.Name = "Column12";
-            this.Column12.Width = 38;
+            this.Column12.Width = 41;
             // 
             // DescriptionPages
             // 
@@ -164,7 +164,7 @@
             this.DescriptionPages.AllowUserToResizeRows = false;
             this.DescriptionPages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DescriptionPages.GridColor = System.Drawing.Color.DimGray;
-            this.DescriptionPages.Location = new System.Drawing.Point(212, 318);
+            this.DescriptionPages.Location = new System.Drawing.Point(212, 317);
             this.DescriptionPages.MultiSelect = false;
             this.DescriptionPages.Name = "DescriptionPages";
             this.DescriptionPages.RowHeadersVisible = false;
@@ -180,7 +180,7 @@
             this.DescriptionTable.AllowUserToResizeRows = false;
             this.DescriptionTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DescriptionTable.GridColor = System.Drawing.Color.DimGray;
-            this.DescriptionTable.Location = new System.Drawing.Point(14, 319);
+            this.DescriptionTable.Location = new System.Drawing.Point(14, 320);
             this.DescriptionTable.Name = "DescriptionTable";
             this.DescriptionTable.RowHeadersVisible = false;
             this.DescriptionTable.Size = new System.Drawing.Size(188, 261);
@@ -236,7 +236,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(15, 292);
+            this.label2.Location = new System.Drawing.Point(15, 291);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(200, 24);
             this.label2.TabIndex = 7;
@@ -246,7 +246,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(208, 292);
+            this.label3.Location = new System.Drawing.Point(208, 291);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(211, 24);
             this.label3.TabIndex = 8;
@@ -256,7 +256,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(579, 292);
+            this.label4.Location = new System.Drawing.Point(579, 291);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(100, 24);
             this.label4.TabIndex = 9;
@@ -296,7 +296,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1107, 595);
+            this.ClientSize = new System.Drawing.Size(1100, 591);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -314,7 +314,7 @@
             this.Controls.Add(this.CellsArray);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Курсовой проект";
+            this.Text = "Константин Рогацевич";
             ((System.ComponentModel.ISupportInitialize)(this.DGRequsts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PagesInMemory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionPages)).EndInit();
